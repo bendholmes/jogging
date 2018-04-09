@@ -2,8 +2,8 @@ from django.contrib.auth import authenticate, login, logout
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from jogging.api.serializers.user import UserSerializer
 
@@ -13,7 +13,7 @@ class LoginView(APIView):
         """
         Login the user.
         """
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
+        user = authenticate(request, username=request.data['username'], password=request.data['password'])
         if user is not None:
             login(request, user)
             return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
@@ -21,7 +21,7 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
 
     def post(self, request, format=None):
         """

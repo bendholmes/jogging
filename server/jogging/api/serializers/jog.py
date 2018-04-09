@@ -10,7 +10,7 @@ class JogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Jog
-        fields = ('owner', 'date', 'distance', 'time', 'average_speed',)
+        fields = ('id', 'owner', 'date', 'distance', 'time', 'average_speed',)
 
     def create(self, validated_data):
         """
