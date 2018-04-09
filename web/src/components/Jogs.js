@@ -1,5 +1,7 @@
 import React from "react";
 
+import DocumentTitle from 'react-document-title'
+
 import { get } from "../utils";
 
 export const Jog = (props) => (
@@ -39,9 +41,11 @@ export default class Jogs extends React.Component {
 
   render() {
     return (
-      <div>
-        {this.state.jogs.map(jog => this.renderJog(jog))}
-      </div>
+      <DocumentTitle title="My Jogs">
+        <div>
+          {this.state.jogs.map(jog => this.renderJog(jog))}
+        </div>
+      </DocumentTitle>
     );
   }
 }

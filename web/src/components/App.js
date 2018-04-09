@@ -1,6 +1,7 @@
 import React from "react";
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import DocumentTitle from 'react-document-title'
 
 import { URLs } from "../constants"
 import Initialize from "./Initialize";
@@ -11,15 +12,17 @@ import NotFound from "./NotFound";
 import LoggedInComponent from "./LoggedInComponent";
 
 const App = () => (
-  <Router>
-    <Switch>
-      <Route exact path={URLs.INIT} component={Initialize} />
-      <LoggedInComponent path={URLs.JOGS} component={Jogs} />
-      <Route path={URLs.LOGIN} component={Login} />
-      <Route path={URLs.LOGOUT} component={Logout} />
-      <Route component={NotFound} />
-    </Switch>
-  </Router>
+  <DocumentTitle title="Jogging">
+    <Router>
+      <Switch>
+        <Route exact path={URLs.INIT} component={Initialize} />
+        <LoggedInComponent path={URLs.JOGS} component={Jogs} />
+        <Route path={URLs.LOGIN} component={Login} />
+        <Route path={URLs.LOGOUT} component={Logout} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
+  </DocumentTitle>
 );
 
 export default App;

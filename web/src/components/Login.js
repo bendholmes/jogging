@@ -1,6 +1,10 @@
 import React from "react";
+
+import DocumentTitle from 'react-document-title'
+
 import { URLs } from "../constants";
 import { post, setUser } from "../utils";
+
 
 export default class Login extends React.Component {
   constructor() {
@@ -50,12 +54,14 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <div>
-        {this.renderError()}
-        <input name="username" value={this.state.username} onChange={(e) => {this.update(e)}} />
-        <input name="password" type="password" value={this.state.password} onChange={(e) => {this.update(e)}} />
-        <div id="loginButton" onClick={() => {this.login()}}>Login</div>
-      </div>
+      <DocumentTitle title="Login to Jogging">
+        <div>
+          {this.renderError()}
+          <input name="username" value={this.state.username} onChange={(e) => {this.update(e)}} />
+          <input name="password" type="password" value={this.state.password} onChange={(e) => {this.update(e)}} />
+          <div id="loginButton" onClick={() => {this.login()}}>Login</div>
+        </div>
+      </DocumentTitle>
     );
   }
 }
