@@ -2,6 +2,7 @@ import React from "react";
 
 import DocumentTitle from 'react-document-title'
 
+import Form from "./Form"
 import { URLs } from "../constants";
 import { post, setUser } from "../utils";
 
@@ -9,18 +10,16 @@ import { post, setUser } from "../utils";
 export default class Login extends React.Component {
   constructor() {
     super();
+
     this.state = {
-      username: '',
-      password: '',
-      error: '',
+      message: ''
     };
   }
 
-  login() {
-    post(
-      "login",
-      {username: this.state.username, password: this.state.password}
-    )
+  login(e, values) {
+    e.preventDefault();
+
+    post("login", values)
     .then(
       (response) => {
         if (!response.ok) throw Error(response.statusText);
@@ -35,32 +34,26 @@ export default class Login extends React.Component {
     )
     .catch(
       (statusText) => {
-        this.setState({'error': 'Login failed: ' + statusText});
+        this.setState({message: "Login failed: " + statusText});
       }
     )
   }
 
-  renderError() {
-    if (this.state.error) {
-      return (
-        <p className="error">{this.state.error}</p>
-      );
-    }
-  }
-
-  update(e) {
-    this.setState({[e.target.name]: e.target.value});
-  }
-
   render() {
+    const inputs = [
+      {label: "Username", name: "username", type: "input"},
+      {label: "Password", name: "password", type: "password"},
+    ];
+
     return (
       <DocumentTitle title="Login to Jogging">
-        <div>
-          {this.renderError()}
-          <input name="username" value={this.state.username} onChange={(e) => {this.update(e)}} />
-          <input name="password" type="password" value={this.state.password} onChange={(e) => {this.update(e)}} />
-          <div id="loginButton" onClick={() => {this.login()}}>Login</div>
-        </div>
+        <Form
+          heading="Login Form"
+          actionName="Login"
+          message={this.state.message}
+          inputs={inputs}
+          onSubmit={(e, values) => {this.login(e, values)}}
+        />
       </DocumentTitle>
     );
   }

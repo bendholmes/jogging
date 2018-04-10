@@ -6,6 +6,9 @@ export const URLs = {
   INIT: '/',
   LOGIN: '/login',
   LOGOUT: '/logout',
+  SIGNUP: '/signup',
   HOME: '/jogs',
-  JOGS: '/jogs'
+  JOGS: '/jogs',
+  REPORTS: '/reports',
+  USERS: '/users',
 };

@@ -9,11 +9,21 @@ import {URLs} from "../constants";
  * Gets the given component including other common components such as the NavBar. If no user is set
  * then we redirect to the login page.
  */
+
 const LoggedInComponent = ({component: Component, ...rest}) => {
-  function getComponent(matchProps) {
-    if (!getUser()) {
+  function getComponent(matchProps, rest) {
+    // TODO: Maybe better to reload the object from the server so we're always up to date on e.g. a refresh
+    const user = getUser();
+    if (!user) {
       return (
         <Redirect to={URLs.LOGIN}/>
+      );
+    }
+
+    // Check the permissions required, if applicable
+    if (rest.permissions && !rest.permissions.includes(user.role)) {
+      return (
+        <Redirect to={URLs.HOME}/>
       );
     }
 
@@ -26,7 +36,7 @@ const LoggedInComponent = ({component: Component, ...rest}) => {
   }
 
   return (
-    <Route {...rest} render={getComponent} />
+    <Route {...rest} render={(matchProps) => getComponent(matchProps, rest)} />
   );
 };
 

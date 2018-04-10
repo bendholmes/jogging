@@ -69,7 +69,7 @@ export function get(url) {
  * @param user The user object.
  */
 export function setUser(user) {
-  user ? localStorage.setItem("user", user) : localStorage.removeItem("user");
+  user ? localStorage.setItem("user", JSON.stringify(user)) : localStorage.removeItem("user");
 }
 
 /**
@@ -77,5 +77,13 @@ export function setUser(user) {
  * @returns {string | null} The user object.
  */
 export function getUser() {
-  return localStorage.getItem("user");
+  return JSON.parse(localStorage.getItem("user"));
+}
+
+export function isAdmin() {
+  return getUser().role === "admin";
+}
+
+export function isManager() {
+  return getUser().role === "manager";
 }
