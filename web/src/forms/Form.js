@@ -37,50 +37,15 @@ export default class Form extends React.Component {
   }
 
   /**
-   * Renders a text form input.
+   * Renders a form input.
    * @param input The input options.
+   * @param props Additional props for the input.
    * @returns {*} Input element.
    */
-  renderInput = (input) => (
+  renderInput = (input, props={}) => (
     <div key={input.name}>
       <label htmlFor={input.name}>{input.label}</label>
-      <input name={input.name} value={this.state[input.name]} onChange={(e) => {this.update(e)}} />
-    </div>
-  );
-
-  /**
-   * Renders a password form input.
-   * @param input The input options.
-   * @returns {*} Input element.
-   */
-  renderPassword = (input) => (
-    <div key={input.name}>
-      <label htmlFor={input.name}>{input.label}</label>
-      <input type="password" name={input.name} value={this.state[input.name]} onChange={(e) => {this.update(e)}} />
-    </div>
-  );
-
-  /**
-   * Renders a checkbox form input.
-   * @param input The input options.
-   * @returns {*} Input element.
-   */
-  renderCheckbox = (input) => (
-    <div key={input.name}>
-      <label htmlFor={input.name}>{input.label}</label>
-      <input type="checkbox" name={input.name} checked={this.state[input.name]} onChange={(e) => {this.update(e)}} />
-    </div>
-  );
-
-  /**
-   * Renders a date form input.
-   * @param input The input options.
-   * @returns {*} Input element.
-   */
-  renderDate = (input) => (
-    <div key={input.name}>
-      <label htmlFor={input.name}>{input.label}</label>
-      <input type="date" name={input.name} checked={this.state[input.name]} onChange={(e) => {this.update(e)}} />
+      <input type={input.type} name={input.name} onChange={(e) => {this.update(e)}} {...props} />
     </div>
   );
 
@@ -93,24 +58,11 @@ export default class Form extends React.Component {
     let inputElements = [];
     for (let input of inputs) {
       switch (input.type) {
-        case 'input': {
-          inputElements.push(this.renderInput(input));
-          break;
-        }
-        case 'password': {
-          inputElements.push(this.renderPassword(input));
-          break;
-        }
         case 'checkbox': {
-          inputElements.push(this.renderCheckbox(input));
+          inputElements.push(this.renderInput(input, {checked: this.state[input.name]}));
           break;
         }
-        case 'date': {
-          inputElements.push(this.renderDate(input));
-          break;
-        }
-        default:
-          throw Error('Invalid input type ' + input.type + ' received when building form.');
+        default: inputElements.push(this.renderInput(input));
       }
     }
     return inputElements;

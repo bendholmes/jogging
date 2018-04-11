@@ -2,6 +2,7 @@ import React from "react";
 
 import DocumentTitle from 'react-document-title'
 
+import CreateJogForm from "../forms/CreateJogForm";
 import FilterJogsForm from "../forms/FilterJogsForm";
 import { get, getUser, isAdmin } from "../utils";
 
@@ -29,7 +30,6 @@ class Jogs extends React.Component {
     super(props);
     this.state = {
       jogs: [],
-      filterFormKey: 0,
     }
   }
 
@@ -61,9 +61,11 @@ class Jogs extends React.Component {
     this.loadJogs(filters);
   };
 
-  clearFilterForm = () => {
-    this.setState({filterFormKey: this.state.filterFormKey + 1});
-    this.loadJogs();
+  addJog = (jog) => {
+    let jogs = this.state.jogs;
+    jogs.push(jog);
+    // TODO: Re-sort by date or insert sorted
+    this.setState({jogs: jogs});
   };
 
   componentDidMount() {
@@ -76,14 +78,13 @@ class Jogs extends React.Component {
 
   renderFilterForm = () => (
     <div>
-      <FilterJogsForm
-        key={this.state.filterFormKey}
-        heading="Filter Jogs by Date"
-        actionName="Filter"
-        message="Choose the range of dates you wish to show jogs between."
-        onSubmit={this.filterJogs}
-      />
-      <input type="submit" value="Clear" onClick={this.clearFilterForm} />
+      <FilterJogsForm onSubmit={this.filterJogs} loadJogs={this.loadJogs} />
+    </div>
+  );
+
+  renderCreateForm = () => (
+    <div>
+      <CreateJogForm addJog={this.addJog} />
     </div>
   );
 
@@ -115,6 +116,7 @@ class Jogs extends React.Component {
     return (
       <div>
         <h2>My Jogs</h2>
+        {this.renderCreateForm()}
         {this.renderFilterForm()}
         {jogs}
       </div>
