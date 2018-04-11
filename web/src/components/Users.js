@@ -2,12 +2,16 @@ import React from "react";
 
 import DocumentTitle from 'react-document-title'
 
-import { get, getUser, isAdmin } from "../utils";
-import CreateUserForm from "./CreateUserForm";
-import { URLs } from "../constants";
+import CreateUserForm from "../forms/CreateUserForm";
 
 
 export default class UsersPage extends React.Component {
+  PAGE_TITLE = "All Users";
+  USER_CREATED_MESSAGE = "User created! :)";
+  CREATE_FAILED_MESSAGE = "Failed to create user: ";
+  FORM_HEADING = "Create User Form";
+  FORM_ACTION_NAME = "Create User";
+
   constructor() {
     super();
 
@@ -17,19 +21,19 @@ export default class UsersPage extends React.Component {
   }
 
   success = (data) => {
-    this.setState({message: "User created! :)"});
+    this.setState({message: this.USER_CREATED_MESSAGE});
   };
 
-  error = (statusText) => {
-    this.setState({message:"Failed to create user: " + statusText});
+  error = (message) => {
+    this.setState({message: this.CREATE_FAILED_MESSAGE + message});
   };
 
   render() {
     return (
-      <DocumentTitle title="All Users">
+      <DocumentTitle title={this.PAGE_TITLE}>
         <CreateUserForm
-          heading="Create User Form"
-          actionName="Create User"
+          heading={this.FORM_HEADING}
+          actionName={this.FORM_ACTION_NAME}
           message={this.state.message}
           success={this.success}
           error={this.error}

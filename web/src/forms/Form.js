@@ -73,6 +73,18 @@ export default class Form extends React.Component {
   );
 
   /**
+   * Renders a date form input.
+   * @param input The input options.
+   * @returns {*} Input element.
+   */
+  renderDate = (input) => (
+    <div key={input.name}>
+      <label htmlFor={input.name}>{input.label}</label>
+      <input type="date" name={input.name} checked={this.state[input.name]} onChange={(e) => {this.update(e)}} />
+    </div>
+  );
+
+  /**
    * Renders all input elements from the inputs as provided in the props.
    * @param inputs
    * @returns {Array}
@@ -93,6 +105,10 @@ export default class Form extends React.Component {
           inputElements.push(this.renderCheckbox(input));
           break;
         }
+        case 'date': {
+          inputElements.push(this.renderDate(input));
+          break;
+        }
         default:
           throw Error('Invalid input type ' + input.type + ' received when building form.');
       }
@@ -106,13 +122,12 @@ export default class Form extends React.Component {
    */
   onSubmit = (e) => {
     this.props.onSubmit(e, this.state);
-    this.setState(this.initialState);
   };
 
   render() {
     return (
       <div>
-        <h1>{this.props.heading}</h1>
+        <h3>{this.props.heading}</h3>
         {this.renderMessage()}
         <form onSubmit={this.onSubmit}>
           {this.renderInputs(this.props.inputs)}

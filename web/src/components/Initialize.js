@@ -21,7 +21,6 @@ export default class Initialize extends React.Component {
         if (response.status !== 200) {
           this.props.history.push(URLs.LOGIN);
         } else {
-          // TODO: Need to do response.json() and then .then to get the response data
           this.props.history.push(URLs.HOME);
         }
       }

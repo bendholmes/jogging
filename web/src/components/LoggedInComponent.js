@@ -3,15 +3,15 @@ import { Route, Redirect } from 'react-router-dom';
 
 import NavBar from "./NavBar";
 import { getUser } from "../utils";
-import {URLs} from "../constants";
+import { URLs } from "../constants";
+import { hasPagePermission } from "../permissions";
 
 /**
- * Gets the given component including other common components such as the NavBar. If no user is set
- * then we redirect to the login page.
+ * Wraps pages requiring login, checking they are authenticated. If permissions are provided
+ * via props, they are also checked. If no user is set then we redirect to the login page.
  */
-
 const LoggedInComponent = ({component: Component, ...rest}) => {
-  function getComponent(matchProps, rest) {
+  const getComponent = (matchProps) => {
     // TODO: Maybe better to reload the object from the server so we're always up to date on e.g. a refresh
     const user = getUser();
     if (!user) {
@@ -20,8 +20,7 @@ const LoggedInComponent = ({component: Component, ...rest}) => {
       );
     }
 
-    // Check the permissions required, if applicable
-    if (rest.permissions && !rest.permissions.includes(user.role)) {
+    if (!hasPagePermission(matchProps.location.pathname)) {
       return (
         <Redirect to={URLs.HOME}/>
       );
@@ -33,10 +32,10 @@ const LoggedInComponent = ({component: Component, ...rest}) => {
         <Component {...matchProps} />
       </div>
     );
-  }
+  };
 
   return (
-    <Route {...rest} render={(matchProps) => getComponent(matchProps, rest)} />
+    <Route {...rest} render={getComponent} />
   );
 };
 

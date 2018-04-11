@@ -2,7 +2,7 @@ import React from "react";
 
 import DocumentTitle from 'react-document-title'
 
-import CreateUserForm from "./CreateUserForm"
+import CreateUserForm from "../forms/CreateUserForm"
 import { URLs } from "../constants";
 
 

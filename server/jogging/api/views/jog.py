@@ -7,13 +7,16 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from jogging.api.views.base import BaseViewSet
+from jogging.api.views.filters import filters, JogFilter
 from jogging.models import Jog
 from jogging.api.serializers import JogSerializer, AdminJogSerializer, JogReportSerializer
 
 
 class JogViewSet(BaseViewSet):
     serializer_class = JogSerializer
-    queryset = Jog.objects.all()
+    queryset = Jog.objects.all().order_by('date')
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_class = JogFilter
 
     def get_queryset(self):
         """

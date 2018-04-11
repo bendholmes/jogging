@@ -2,6 +2,7 @@ import React from "react";
 
 import DocumentTitle from 'react-document-title'
 
+import FilterJogsForm from "../forms/FilterJogsForm";
 import { get, getUser, isAdmin } from "../utils";
 
 class Jog extends React.Component {
@@ -28,6 +29,7 @@ class Jogs extends React.Component {
     super(props);
     this.state = {
       jogs: [],
+      filterFormKey: 0,
     }
   }
 
@@ -37,8 +39,8 @@ class Jogs extends React.Component {
     // TODO: Call server
   }
 
-  componentDidMount() {
-    get("jog")
+  loadJogs = (filters) => {
+    get("jog", filters)
     .then(
       (response) => {
         if (response.status >= 400) {
@@ -52,27 +54,56 @@ class Jogs extends React.Component {
         this.setState({jogs: data});
       }
     );
+  };
+
+  filterJogs = (e, filters) => {
+    e.preventDefault();
+    this.loadJogs(filters);
+  };
+
+  clearFilterForm = () => {
+    this.setState({filterFormKey: this.state.filterFormKey + 1});
+    this.loadJogs();
+  };
+
+  componentDidMount() {
+    this.loadJogs();
   }
 
   renderJog = (jog) => (
     <Jog key={jog.id} jog={jog} onDelete={() => {this.onDelete(jog)}} />
   );
 
-  jogsTable = () => (
-    <table>
-      <thead>
-        <tr>
-          <td>Date</td>
-          <td>Distance</td>
-          <td>Time</td>
-          <td>Average Speed</td>
-          {isAdmin() && <td>Owner</td>}
-        </tr>
-      </thead>
-      <tbody>
-        {this.state.jogs.map(jog => this.renderJog(jog))}
-      </tbody>
-    </table>
+  renderFilterForm = () => (
+    <div>
+      <FilterJogsForm
+        key={this.state.filterFormKey}
+        heading="Filter Jogs by Date"
+        actionName="Filter"
+        message="Choose the range of dates you wish to show jogs between."
+        onSubmit={this.filterJogs}
+      />
+      <input type="submit" value="Clear" onClick={this.clearFilterForm} />
+    </div>
+  );
+
+  jogs = () => (
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <td>Date</td>
+            <td>Distance</td>
+            <td>Time</td>
+            <td>Average Speed</td>
+            {isAdmin() && <td>Owner</td>}
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.jogs.map(jog => this.renderJog(jog))}
+        </tbody>
+      </table>
+    </div>
   );
 
   noJogs = () => (
@@ -80,10 +111,11 @@ class Jogs extends React.Component {
   );
 
   render() {
-    const jogs = this.state.jogs.length ? this.jogsTable() : this.noJogs();
+    const jogs = this.state.jogs.length ? this.jogs() : this.noJogs();
     return (
       <div>
         <h2>My Jogs</h2>
+        {this.renderFilterForm()}
         {jogs}
       </div>
     );

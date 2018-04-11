@@ -55,13 +55,18 @@ export function post(url, body={}, extra={}) {
 /**
  * Wrapper around fetch to make a GET call including required auth settings.
  * @param url The URL to get.
+ * @param params Optional object of param key and values.
  * @returns {Promise<Response>} Fetch promise.
  */
-export function get(url) {
-  return fetch(
-    BASE_URL + url + "/",
-    {credentials: "include"}
-  );
+export function get(url, params=null) {
+  url = BASE_URL + url + "/";
+
+  if (params) {
+    const urlParams = new URLSearchParams(Object.entries(params));
+    url += "?" + urlParams;
+  }
+
+  return fetch(url, {credentials: "include"});
 }
 
 /**

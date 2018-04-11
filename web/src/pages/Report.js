@@ -21,12 +21,13 @@ class Report extends React.Component {
 class Reports extends React.Component {
   ENDPOINT = "report";
   NO_RESULTS_MESSAGE = "No jogging reports :(";
+  INITIAL_MESSAGE = "Loading reports...";
 
   constructor(props) {
     super(props);
     this.state = {
       reports: [],
-      error: ''
+      message: this.INITIAL_MESSAGE
     }
   }
 
@@ -35,6 +36,7 @@ class Reports extends React.Component {
     .then(
       (response) => {
         if (!response.ok) throw Error(response.statusText);
+        this.setState({message: ''});
         return response.json();
       }
     )
@@ -45,8 +47,8 @@ class Reports extends React.Component {
       }
     )
     .catch(
-      (statusText) => {
-        this.setState({error: statusText});
+      (error) => {
+        this.setState({message: error.message});
       }
     );
   }
@@ -70,12 +72,12 @@ class Reports extends React.Component {
     </table>
   );
 
-  error = (message) => (
-    <div>{message}</div>
+  message = () => (
+    <div>{this.state.message}</div>
   );
 
   render() {
-    const reports = this.state.error ? this.error() : this.reportsTable();
+    const reports = this.state.message ? this.message() : this.reportsTable();
     return (
       <div>
         <h2>My Weekly Jogging Reports</h2>
