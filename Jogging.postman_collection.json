@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "33f045b6-6ed9-4e88-b7c5-3429092ec673",
+		"name": "Jogging",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7f60b6ea-624f-46bc-afa8-f7f2d70720d3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"csrftoken\", decodeURIComponent(pm.cookies.get(\"csrftoken\")))",
+							"",
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var user = pm.response.json();",
+							"    pm.expect(user).to.have.property('username');",
+							"    pm.expect(user).to.have.property('role');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/login/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Jog",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "371daeae-883a-43f2-a1d8-dbbacff5dc36",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"last-created-jog\", pm.response.json().id);",
+							"",
+							"pm.test(\"response must be created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var jog = pm.response.json();",
+							"    pm.expect(jog).to.have.property('id');",
+							"    pm.expect(jog.owner).to.equal('super');",
+							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00Z');",
+							"    pm.expect(jog.distance).to.equal(100);",
+							"    pm.expect(jog.time).to.equal('00:34:12');    ",
+							"    pm.expect(jog.average_speed).to.equal('175.44 distance per hour');   ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": \"3000-10-20 12:31\",\n\t\"distance\": 100,\n\t\"time\": \"00:34:12\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Jogs",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "74ddacf5-9299-4985-89a5-8f548bb799ab",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var firstJog = pm.response.json()[0];",
+							"    pm.expect(firstJog).to.have.property('id');",
+							"    pm.expect(firstJog).to.have.property('owner');",
+							"    pm.expect(firstJog).to.have.property('date');",
+							"    pm.expect(firstJog).to.have.property('distance');",
+							"    pm.expect(firstJog).to.have.property('time');",
+							"    pm.expect(firstJog).to.have.property('average_speed');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Jog",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "75b18b3e-25dc-4a9b-9c92-57fa1b52f2a0",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var jog = pm.response.json();",
+							"    pm.expect(jog).to.have.property('id');",
+							"    pm.expect(jog.owner).to.equal('super');",
+							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00Z');",
+							"    pm.expect(jog.distance).to.equal(100);",
+							"    pm.expect(jog.time).to.equal('00:34:12');    ",
+							"    pm.expect(jog.average_speed).to.equal('175.44 distance per hour');   ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/{{last-created-jog}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						"{{last-created-jog}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Jog",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1fe709e5-c1f9-475d-a167-cc167c96f580",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"last-created-jog\", pm.response.json().id);",
+							"",
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var jog = pm.response.json();",
+							"    pm.expect(jog).to.have.property('id');",
+							"    pm.expect(jog.owner).to.equal('super');",
+							"    pm.expect(jog.date).to.equal('4000-10-20T12:31:00Z');",
+							"    pm.expect(jog.distance).to.equal(200);",
+							"    pm.expect(jog.time).to.equal('00:44:12');    ",
+							"    pm.expect(jog.average_speed).to.equal('271.49 distance per hour');   ",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": \"4000-10-20 12:31\",\n\t\"distance\": 200,\n\t\"time\": \"00:44:12\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/{{last-created-jog}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						"{{last-created-jog}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Jog",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b04b957a-d10b-4530-8e6c-7bb1a2c16fb0",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/{{last-created-jog}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						"{{last-created-jog}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reports",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae284813-38b1-4e98-ae97-e39369a8eafe",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var firstReport = pm.response.json()[0];",
+							"    pm.expect(firstReport).to.have.property('week');",
+							"    pm.expect(firstReport).to.have.property('distance');",
+							"    pm.expect(firstReport).to.have.property('average_speed');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/report/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"report",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "55039a59-bfaf-4820-ba89-03658c0f42db",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/logout/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"logout",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e4e17e08-e9d9-4679-a7f6-f59cd63c2301",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d5c75d26-7a06-4720-8d4f-4bbd1ca3791f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
