@@ -1,3 +1,5 @@
+import datetime
+
 from jogging import constants
 
 
@@ -8,6 +10,18 @@ def time_to_hours(time):
     :return: Float hour value.
     """
     return time.hour + (time.minute / constants.MINUTES_IN_HOUR) + (time.second / constants.SECONDS_IN_HOUR)
+
+
+def timedelta_to_time(timedelta):
+    """
+    Converts a timedelta to a time object.
+    :param timedelta: The timedelta to convert.
+    :return: Time object.
+    """
+    hours, remainder = divmod(timedelta.seconds, constants.SECONDS_IN_HOUR)
+    hours += timedelta.days * constants.HOURS_IN_DAY
+    minutes, seconds = divmod(remainder, 60)
+    return datetime.time(hour=hours, minute=minutes, second=seconds)
 
 
 def calculate_speed(distance, time):

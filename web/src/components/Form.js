@@ -68,7 +68,7 @@ export default class Form extends React.Component {
   renderCheckbox = (input) => (
     <div key={input.name}>
       <label htmlFor={input.name}>{input.label}</label>
-      <input type="checkbox" name={input.name} value={this.state[input.name]} onChange={(e) => {this.update(e)}} />
+      <input type="checkbox" name={input.name} checked={this.state[input.name]} onChange={(e) => {this.update(e)}} />
     </div>
   );
 
@@ -106,6 +106,7 @@ export default class Form extends React.Component {
    */
   onSubmit = (e) => {
     this.props.onSubmit(e, this.state);
+    this.setState(this.initialState);
   };
 
   render() {

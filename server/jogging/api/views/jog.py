@@ -4,6 +4,7 @@ from django.db.models.functions import TruncWeek
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from jogging.api.views.base import BaseViewSet
 from jogging.models import Jog
@@ -28,11 +29,13 @@ class JogViewSet(BaseViewSet):
         return AdminJogSerializer if self.request.user.is_superuser else JogSerializer
 
 
-class JogReport(APIView):
+class JogReportView(APIView):
     """
     Groups all jogs for the requesting user by week and provides an average distance
     and time for each.
     """
+    permission_classes = (IsAuthenticated, )
+
     def get(self, request, format=None):
         qs = Jog.objects.filter(owner=request.user).annotate(
             week=TruncWeek('date')

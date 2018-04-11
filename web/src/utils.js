@@ -29,6 +29,7 @@ export function getCookie(cname) {
 /**
  * Wrapper around fetch to make a POST call including all required auth headers.
  * @param url The URL to get.
+ * @param body The body payload as needed.
  * @param extra Extra params as needed.
  * @returns {Promise<Response>} Fetch promise.
  */

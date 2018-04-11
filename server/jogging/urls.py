@@ -4,7 +4,7 @@ from django.urls import path
 
 from rest_framework import routers
 
-from jogging.api.views import LoginView, LogoutView, JogViewSet, UserViewSet
+from jogging.api.views import LoginView, LogoutView, JogViewSet, JogReportView, UserViewSet
 
 
 # Base Django URLs
@@ -21,5 +21,6 @@ router.register(r'api/jog', JogViewSet)
 router.register(r'api/user', UserViewSet)
 urlpatterns += router.urls
 
+urlpatterns += [url(r'^api/report/$', JogReportView.as_view())]
 urlpatterns += [url(r'^api/login/$', LoginView.as_view())]
 urlpatterns += [url(r'^api/logout/$', LogoutView.as_view())]

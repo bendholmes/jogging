@@ -6,6 +6,7 @@ import DocumentTitle from 'react-document-title'
 import { URLs } from "../constants"
 import Initialize from "./Initialize";
 import JogsPage from "./Jogs";
+import ReportsPage from "../pages/Report";
 import UsersPage from "./Users";
 import Login from "./Login";
 import Logout from "./Logout";
@@ -22,10 +23,8 @@ const App = () => (
         <Route path={URLs.LOGOUT} component={Logout} />
         <Route path={URLs.SIGNUP} component={Signup} />
         <LoggedInComponent path={URLs.JOGS} component={JogsPage} />
-        <LoggedInComponent
-          path={URLs.USERS}
-          component={UsersPage}
-          permissions={['admin', 'manager']} />
+        <LoggedInComponent path={URLs.REPORTS} component={ReportsPage} />
+        <LoggedInComponent path={URLs.USERS} component={UsersPage} permissions={['admin', 'manager']}/>
         <Route component={NotFound} />
       </Switch>
     </Router>
