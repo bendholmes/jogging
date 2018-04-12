@@ -4,7 +4,7 @@ import DocumentTitle from 'react-document-title'
 
 import CreateJogForm from "../forms/CreateJogForm";
 import FilterJogsForm from "../forms/FilterJogsForm";
-import { get, getUser, isAdmin } from "../utils";
+import { get, getUser, isAdmin, formatDate } from "../utils";
 
 class Jog extends React.Component {
   render() {
@@ -14,7 +14,7 @@ class Jog extends React.Component {
 
     return (
       <tr>
-        <td>{jog.date}</td>
+        <td>{formatDate(jog.date)}</td>
         <td>{jog.distance}</td>
         <td>{jog.time}</td>
         <td>{jog.average_speed}</td>

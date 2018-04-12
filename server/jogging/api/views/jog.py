@@ -14,7 +14,7 @@ from jogging.api.serializers import JogSerializer, AdminJogSerializer, JogReport
 
 class JogViewSet(BaseViewSet):
     serializer_class = JogSerializer
-    queryset = Jog.objects.all().order_by('date')
+    queryset = Jog.objects.all().order_by('-date')
     filter_backends = (filters.DjangoFilterBackend,)
     filter_class = JogFilter
 
@@ -45,7 +45,7 @@ class JogReportView(APIView):
         ).values('week').annotate(
             distance=Sum('distance'),
             time=Sum('time')
-        )
+        ).order_by('-week')
 
         return Response(
             JogReportSerializer(qs, many=True).data,

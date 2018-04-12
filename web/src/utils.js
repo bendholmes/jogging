@@ -1,4 +1,5 @@
 import { BASE_URL } from "./constants";
+import moment from "moment/moment";
 
 /**
  * Adapted from https://www.w3schools.com/js/js_cookies.asp
@@ -92,4 +93,11 @@ export function isAdmin() {
 
 export function isManager() {
   return getUser().role === "manager";
+}
+
+/**
+ * Convenience method wrapping the date formatting used in the app.
+ */
+export function formatDate(date) {
+  return moment(date).format("ddd DD MMM Y @ h:mm A");
 }

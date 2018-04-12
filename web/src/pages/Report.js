@@ -2,7 +2,7 @@ import React from "react";
 
 import DocumentTitle from 'react-document-title'
 
-import { get } from "../utils";
+import { get, formatDate } from "../utils";
 
 class Report extends React.Component {
   render() {
@@ -10,7 +10,7 @@ class Report extends React.Component {
 
     return (
       <tr>
-        <td>{report.week}</td>
+        <td>{formatDate(report.week)}</td>
         <td>{report.average_speed}</td>
         <td>{report.distance}</td>
       </tr>
