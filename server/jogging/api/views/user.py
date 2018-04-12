@@ -7,7 +7,7 @@ from jogging.api.serializers import UserSerializer
 
 
 class UserViewSet(BaseViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     lookup_field = 'username'
 

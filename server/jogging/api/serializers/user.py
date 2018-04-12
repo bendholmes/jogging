@@ -1,3 +1,5 @@
+import time
+
 from django.contrib.auth.hashers import make_password
 
 from rest_framework import serializers
@@ -18,11 +20,12 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(BaseUserSerializer):
     role = serializers.SerializerMethodField()
-    is_superuser = serializers.BooleanField(write_only=True, required=False)
-    is_staff = serializers.BooleanField(write_only=True, required=False)
+    is_superuser = serializers.BooleanField(required=False)
+    is_staff = serializers.BooleanField(required=False)
+    date_joined = serializers.SerializerMethodField()
 
     class Meta(BaseUserSerializer.Meta):
-        fields = BaseUserSerializer.Meta.fields + ('role', 'is_superuser', 'is_staff',)
+        fields = BaseUserSerializer.Meta.fields + ('role', 'is_superuser', 'is_staff', 'date_joined',)
 
     def save(self):
         """
@@ -48,3 +51,12 @@ class UserSerializer(BaseUserSerializer):
         elif user.is_staff:
             return 'manager'
         return 'user'
+
+    def get_date_joined(self, user):
+        """
+        Gets the date the user joined as a timestamp. Used by the web app to maintain a sorted list
+        of users after creating new ones.
+        :param user: The user object.
+        :return: Timestamp of when the user was created.
+        """
+        return time.mktime(user.date_joined.timetuple())

@@ -1,10 +1,11 @@
 import React from "react";
 
-import DocumentTitle from 'react-document-title'
+import DocumentTitle from "react-document-title";
+import moment from "moment";
 
 import CreateJogForm from "../forms/CreateJogForm";
 import FilterJogsForm from "../forms/FilterJogsForm";
-import { get, getUser, isAdmin, formatDate } from "../utils";
+import { get, getUser, isAdmin, formatDate, sortByKey } from "../utils";
 
 class Jog extends React.Component {
   render() {
@@ -61,10 +62,14 @@ class Jogs extends React.Component {
     this.loadJogs(filters);
   };
 
+  /**
+   * Adds a new jog to the list and re-sorts them by date.
+   * @param jog The jog to add.
+   */
   addJog = (jog) => {
     let jogs = this.state.jogs;
     jogs.push(jog);
-    // TODO: Re-sort by date or insert sorted
+    jogs.sort((j1, j2) => moment(j1.date).unix()  < moment(j2.date).unix() ? 1 : -1);
     this.setState({jogs: jogs});
   };
 
