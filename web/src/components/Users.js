@@ -101,10 +101,6 @@ class UpdateUserForm extends React.Component {
     )
   };
 
-  closeUpdateForm = () => {
-    // TODO
-  };
-
   inputs = [
     {label: "Username", name: "username", type: "input"},
     {label: "Password", name: "password", type: "password"},
@@ -123,7 +119,7 @@ class UpdateUserForm extends React.Component {
           onSubmit={this.updateUser}
           data={this.props.user}
         />
-        <input type="submit" value="Cancel" onClick={this.closeUpdateForm}/>
+        <input type="submit" value="Cancel" onClick={this.props.onCancel}/>
       </div>
     );
   }
@@ -174,10 +170,15 @@ class Users extends React.Component {
     this.setState({updateUser: user});
   };
 
+  hideUpdateUserForm = () => {
+    this.showUpdateUserForm(null);
+  };
+
   updateUser = (user) => {
     this.setState((prevState) => ({
       users: replace(prevState.users, user.id, user)
     }));
+    this.hideUpdateUserForm();
   };
 
   /**
@@ -196,11 +197,21 @@ class Users extends React.Component {
   };
 
   renderUser = (user) => (
-    <User key={user.username} user={user} onDelete={this.deleteUser} onUpdate={this.showUpdateUserForm} />
+    <User
+      key={user.username}
+      user={user}
+      onDelete={this.deleteUser}
+      onUpdate={this.showUpdateUserForm}
+    />
   );
 
   renderUpdateForm = () => (
-    <UpdateUserForm key={this.state.updateUser.username} user={this.state.updateUser} onUpdate={this.updateUser} />
+    <UpdateUserForm
+      key={this.state.updateUser.username}
+      user={this.state.updateUser}
+      onUpdate={this.updateUser}
+      onCancel={this.hideUpdateUserForm}
+    />
   );
 
   usersTable = () => (
