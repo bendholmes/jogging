@@ -4,14 +4,21 @@ import DocumentTitle from "react-document-title";
 import moment from "moment";
 
 import CreateJogForm from "../forms/CreateJogForm";
+import UpdateJogForm from "../forms/UpdateJogForm";
 import FilterJogsForm from "../forms/FilterJogsForm";
-import { get, getUser, isAdmin, formatDate, del, without } from "../utils";
+import {get, isAdmin, formatDate, del, without, replace} from "../utils";
 
 class Jog extends React.Component {
+  onUpdate = () => {
+    this.props.onUpdate(this.props.jog);
+  };
+
+  onDelete = () => {
+    this.props.onDelete(this.props.jog);
+  };
+
   render() {
     const jog = this.props.jog;
-    const deleteButton = isAdmin() || getUser().username === jog.owner ?
-      <td onClick={this.props.onDelete}>Del</td> : null;
 
     return (
       <tr>
@@ -20,7 +27,10 @@ class Jog extends React.Component {
         <td>{jog.time}</td>
         <td>{jog.average_speed}</td>
         {isAdmin() && <td>{jog.owner}</td>}
-        {deleteButton}
+        <td>
+          <span onClick={this.onUpdate}>Update</span>
+          <span onClick={this.onDelete}>Del</span>
+        </td>
       </tr>
     );
   }
@@ -28,12 +38,19 @@ class Jog extends React.Component {
 
 class Jogs extends React.Component {
   ENDPOINT = "jog";
+  INITIAL_MESSAGE = "Loading jogs...";
 
   state = {
     jogs: [],
+    updateJog: null,
+    message: this.INITIAL_MESSAGE
   };
 
-  onDelete(jog) {
+  componentDidMount() {
+    this.loadJogs();
+  }
+
+  deleteJog(jog) {
     this.setState(prevState => ({jogs: without(prevState.jogs, jog)}));
 
     del(this.ENDPOINT, jog.id)
@@ -48,15 +65,20 @@ class Jogs extends React.Component {
     get(this.ENDPOINT, filters)
     .then(
       (response) => {
-        if (response.status >= 400) {
-          throw new Error("Bad response from server");
-        }
+        if (!response.ok) throw Error(response.statusText);
+        this.setState({message: ''});
         return response.json();
       }
     )
     .then(
       (data) => {
+        if (!data.length) throw Error(this.NO_RESULTS_MESSAGE);
         this.setState({jogs: data});
+      }
+    )
+    .catch(
+      (error) => {
+        this.setState({message: error.message});
       }
     );
   };
@@ -77,12 +99,28 @@ class Jogs extends React.Component {
     this.setState({jogs: jogs});
   };
 
-  componentDidMount() {
-    this.loadJogs();
-  }
+  showUpdateJogForm = (jog) => {
+    this.setState({updateJog: jog});
+  };
+
+  hideUpdateJogForm = () => {
+    this.showUpdateJogForm(null);
+  };
+
+  updateJog = (jog) => {
+    this.setState((prevState) => ({
+      jogs: replace(prevState.jogs, jog.id, jog)
+    }));
+    this.hideUpdateJogForm();
+  };
 
   renderJog = (jog) => (
-    <Jog key={jog.id} jog={jog} onDelete={() => {this.onDelete(jog)}} />
+    <Jog
+      key={jog.id}
+      jog={jog}
+      onDelete={this.deleteJog}
+      onUpdate={this.showUpdateJogForm}
+    />
   );
 
   renderFilterForm = () => (
@@ -95,6 +133,15 @@ class Jogs extends React.Component {
     <div>
       <CreateJogForm addJog={this.addJog} />
     </div>
+  );
+
+  renderUpdateForm = () => (
+    <UpdateJogForm
+      key={this.state.updateJog.id}
+      jog={this.state.updateJog}
+      onUpdate={this.updateJog}
+      onCancel={this.hideUpdateJogForm}
+    />
   );
 
   jogs = () => (
@@ -123,10 +170,13 @@ class Jogs extends React.Component {
 
   render() {
     const jogs = this.state.jogs.length ? this.jogs() : this.noJogs();
+    const updateForm = this.state.updateJog ? this.renderUpdateForm() : null;
+
     return (
       <div>
         <h2>My Jogs</h2>
         {this.renderCreateForm()}
+        {updateForm}
         {this.renderFilterForm()}
         {jogs}
       </div>
