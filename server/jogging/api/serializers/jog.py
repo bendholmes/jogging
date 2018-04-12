@@ -32,7 +32,7 @@ class JogSerializer(serializers.ModelSerializer):
 
 
 class AdminJogSerializer(JogSerializer):
-    owner = serializers.SlugRelatedField(slug_field='username', queryset=Jog.objects.all())
+    owner = serializers.SlugRelatedField(slug_field='username', queryset=Jog.objects.all(), required=False)
 
     def create(self, validated_data):
         """

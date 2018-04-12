@@ -19,7 +19,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(BaseUserSerializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(read_only=True)
     role = serializers.SerializerMethodField()
     is_superuser = serializers.BooleanField(required=False)
     is_staff = serializers.BooleanField(required=False)

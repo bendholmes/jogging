@@ -74,7 +74,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "305370d4-93ba-48fc-94a8-5fb9519ad2d8",
+						"id": "52379548-3ade-4779-a053-dfb202839d14",
 						"type": "text/javascript",
 						"exec": [
 							"pm.environment.set(\"csrftoken\", decodeURIComponent(pm.cookies.get(\"csrftoken\")))",
@@ -93,7 +93,9 @@
 							"// If we have specified an action after login, set that as the next one",
 							"if (pm.environment.get(\"requestAfterLogin\")) {",
 							"    postman.setNextRequest(pm.environment.get(\"requestAfterLogin\"));",
-							"}"
+							"}",
+							"",
+							"pm.environment.set(\"logged-in-user-id\", pm.response.json().id);"
 						]
 					}
 				}
@@ -730,14 +732,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{url}}/api/user/{{username}}/",
+					"raw": "{{url}}/api/user/{{logged-in-user-id}}/",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"api",
 						"user",
-						"{{username}}",
+						"{{logged-in-user-id}}",
 						""
 					]
 				}
@@ -804,14 +806,14 @@
 					"raw": "{\n\t\"username\": \"patched-user\",\n\t\"password\": \"patched-pass\"\n}"
 				},
 				"url": {
-					"raw": "{{url}}/api/user/{{username}}/",
+					"raw": "{{url}}/api/user/{{logged-in-user-id}}/",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"api",
 						"user",
-						"{{username}}",
+						"{{logged-in-user-id}}",
 						""
 					]
 				}
@@ -862,14 +864,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{url}}/api/user/{{username}}/",
+					"raw": "{{url}}/api/user/{{logged-in-user-id}}/",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"api",
 						"user",
-						"{{username}}",
+						"{{logged-in-user-id}}",
 						""
 					]
 				}
