@@ -32,10 +32,7 @@ class JogSerializer(serializers.ModelSerializer):
 
 
 class AdminJogSerializer(JogSerializer):
-    owner_id = serializers.IntegerField(write_only=True, required=False)
-
-    class Meta(JogSerializer.Meta):
-        fields = JogSerializer.Meta.fields + ('owner_id',)
+    owner = serializers.SlugRelatedField(slug_field='username', queryset=Jog.objects.all())
 
     def create(self, validated_data):
         """
@@ -43,7 +40,7 @@ class AdminJogSerializer(JogSerializer):
         :param validated_data: The validated serializer data.
         :return: Jog object with owner saved.
         """
-        if "owner_id" in validated_data:
+        if "owner" in validated_data:
             return super(JogSerializer, self).create(validated_data)
         return super(AdminJogSerializer, self).create(validated_data)
 

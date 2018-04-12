@@ -71,10 +71,33 @@ export function get(url, params=null) {
 }
 
 /**
+ * Updates an object with the given id with the given data at the given url.
+ * @param url The URL to update.
+ * @param id The id of the object to update.
+ * @param data The data to update the object with.
+ * @returns {Promise<Response>} Fetch promise.
+ */
+export function patch(url, id, data) {
+  return fetch(
+    BASE_URL + url + "/" + encodeURIComponent(id) + "/", // Make sure we encode the ID as it could contain any character
+    {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }
+  );
+}
+
+/**
  * Deletes an object with the given id at the given url.
  * @param url The endpoint to delete from.
  * @param id The id of the object to delete.
- * @returns {Promise<Response>}
+ * @returns {Promise<Response>} Fetch promise.
  */
 export function del(url, id) {
   return fetch(

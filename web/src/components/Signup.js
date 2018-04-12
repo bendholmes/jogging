@@ -7,13 +7,9 @@ import { URLs } from "../constants";
 
 
 export default class Signup extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      message: ''
-    };
-  }
+  state = {
+    message: ''
+  };
 
   success = (data) => {
     this.props.history.push(URLs.LOGIN);

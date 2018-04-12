@@ -12,15 +12,28 @@ export default class Form extends React.Component {
     super(props);
 
     // Initialize the value state for each input
-    for (let input of props.inputs) this.initialState[input.name] = input.type === 'checkbox' ? false : '';
+    for (let input of props.inputs) this.initialState[input.name] = this.getInitialValue(input);
     this.state = this.initialState;
+  }
+
+  /**
+   * Initializes the values for each input, using the data provided if applicable. This assumes
+   * a 1 : 1 mapping between the input name and data key.
+   * @param input The input to initialize the state value for.
+   * @returns {*} Initial input value.
+   */
+  getInitialValue(input) {
+    if (this.props.data)
+      return this.props.data[input.name];
+    else
+      return input.type === 'checkbox' ? false : '';
   }
 
   /**
    * Updates the value for the changed input in the state.
    * @param e Event object.
    */
-  update(e) {
+  update = (e) => {
     this.setState({[e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value});
   }
 
@@ -45,7 +58,13 @@ export default class Form extends React.Component {
   renderInput = (input, props={}) => (
     <div key={input.name}>
       <label htmlFor={input.name}>{input.label}</label>
-      <input type={input.type} name={input.name} onChange={(e) => {this.update(e)}} {...props} />
+      <input
+        type={input.type}
+        name={input.name}
+        value={this.state[input.name]}
+        onChange={this.update}
+        {...props}
+      />
     </div>
   );
 

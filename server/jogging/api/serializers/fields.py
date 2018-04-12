@@ -1,5 +1,6 @@
+from django.utils.html import escape
+
 from rest_framework import serializers
-import bleach
 
 
 class SafeCharField(serializers.CharField):
@@ -14,4 +15,4 @@ class SafeCharField(serializers.CharField):
         :param data: The data to be sanitized.
         :return: Sanitized data.
         """
-        return bleach.clean(data)
+        return escape(data)

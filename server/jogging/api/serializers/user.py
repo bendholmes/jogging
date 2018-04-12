@@ -19,13 +19,14 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(BaseUserSerializer):
+    id = serializers.IntegerField()
     role = serializers.SerializerMethodField()
     is_superuser = serializers.BooleanField(required=False)
     is_staff = serializers.BooleanField(required=False)
     date_joined = serializers.SerializerMethodField()
 
     class Meta(BaseUserSerializer.Meta):
-        fields = BaseUserSerializer.Meta.fields + ('role', 'is_superuser', 'is_staff', 'date_joined',)
+        fields = BaseUserSerializer.Meta.fields + ('id', 'role', 'is_superuser', 'is_staff', 'date_joined',)
 
     def save(self):
         """
