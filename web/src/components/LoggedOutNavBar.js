@@ -5,7 +5,7 @@ import { URLs } from "../constants";
 
 
 const LoggedOutNavBar = () => (
-  <ul>
+  <ul className="nav">
     <li><Link to={URLs.LOGIN}>Login</Link></li>
     <li><Link to={URLs.SIGNUP}>Signup</Link></li>
   </ul>

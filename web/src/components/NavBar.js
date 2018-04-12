@@ -22,7 +22,7 @@ const validPage = (page) => {
 };
 
 const NavBar = () => (
-  <ul>
+  <ul className="nav">
     {PAGES.map(validPage)}
   </ul>
 );
