@@ -147,8 +147,8 @@ class Users extends React.Component {
     )
     .then(
       (data) => {
-        if (!data.length) throw Error(this.NO_RESULTS_MESSAGE);
         this.setState({users: data});
+        if (!data.length) throw Error(this.NO_RESULTS_MESSAGE);
       }
     )
     .catch(

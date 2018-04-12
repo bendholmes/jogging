@@ -39,6 +39,7 @@ class Jog extends React.Component {
 class Jogs extends React.Component {
   ENDPOINT = "jog";
   INITIAL_MESSAGE = "Loading jogs...";
+  NO_RESULTS_MESSAGE = "No jogs :(";
 
   state = {
     jogs: [],
@@ -72,8 +73,8 @@ class Jogs extends React.Component {
     )
     .then(
       (data) => {
-        if (!data.length) throw Error(this.NO_RESULTS_MESSAGE);
         this.setState({jogs: data});
+        if (!data.length) throw Error(this.NO_RESULTS_MESSAGE);
       }
     )
     .catch(
@@ -165,7 +166,7 @@ class Jogs extends React.Component {
   );
 
   noJogs = () => (
-    <div>No jogs :(</div>
+    <div>{this.state.message}</div>
   );
 
   render() {
