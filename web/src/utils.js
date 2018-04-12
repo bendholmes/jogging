@@ -1,5 +1,5 @@
 import { BASE_URL } from "./constants";
-import moment from "moment/moment";
+import moment from "moment";
 
 /**
  * Adapted from https://www.w3schools.com/js/js_cookies.asp
@@ -139,9 +139,11 @@ export function isManager() {
 
 /**
  * Convenience method wrapping the date formatting used in the app.
+ *
+ * TODO: For simplicity, we are currently ignoring timezones.
  */
 export function formatDate(date) {
-  return moment(date).format("ddd DD MMM Y @ h:mm A");
+  return moment.utc(date).format("ddd DD MMM Y @ h:mm A");
 }
 
 /**
