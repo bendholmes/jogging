@@ -4,7 +4,7 @@ import DocumentTitle from "react-document-title";
 
 import Form from "../forms/Form";
 import CreateUserForm from "../forms/CreateUserForm";
-import {get, del, without, patch } from "../utils";
+import {get, del, without, patch, replace } from "../utils";
 
 
 class User extends React.Component {
@@ -175,9 +175,9 @@ class Users extends React.Component {
   };
 
   updateUser = (user) => {
-    this.setState((prevState) => {
-      // TODO: Replace with new one
-    });
+    this.setState((prevState) => ({
+      users: replace(prevState.users, user.id, user)
+    }));
   };
 
   /**

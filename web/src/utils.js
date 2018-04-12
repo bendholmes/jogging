@@ -152,3 +152,13 @@ export function formatDate(date) {
 export function without(arr, objToRemove) {
   return arr.filter((obj) => obj !== objToRemove);
 }
+
+/**
+ * Replaces an object in an array with the given id by the given object.
+ * @param arr Array containing the object to replace.
+ * @param objIdToReplace Id of the object to replace.
+ * @param newObj The object to replace the existing one with.
+ */
+export function replace(arr, objIdToReplace, newObj) {
+  return arr.map(obj => obj.id === objIdToReplace ? newObj : obj);
+}
