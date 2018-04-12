@@ -5,13 +5,13 @@ import DocumentTitle from 'react-document-title'
 
 import { URLs } from "./constants"
 import Initialize from "./components/Initialize";
-import JogsPage from "./components/Jogs";
+import JogsPage from "./pages/Jogs";
 import ReportsPage from "./pages/Report";
-import UsersPage from "./components/Users";
-import Login from "./components/Login";
-import Logout from "./components/Logout";
-import Signup from "./components/Signup";
-import NotFound from "./components/NotFound";
+import UsersPage from "./pages/Users";
+import Login from "./pages/Login";
+import Logout from "./pages/Logout";
+import Signup from "./pages/Signup";
+import NotFound from "./pages/NotFound";
 import LoggedOutComponent from "./components/LoggedOutComponent";
 import LoggedInComponent from "./components/LoggedInComponent";
 
