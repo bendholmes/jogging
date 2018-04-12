@@ -1,4 +1,7 @@
+from django.contrib.auth.hashers import make_password
+
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from jogging.api.serializers.fields import SafeCharField
 from jogging.models import User
@@ -21,16 +24,22 @@ class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         fields = BaseUserSerializer.Meta.fields + ('role', 'is_superuser', 'is_staff',)
 
-    def create(self, validated_data):
+    def save(self):
         """
-        Override create to properly encrypt the password given.
-        :param validated_data: The validated serializer data.
-        :return: User object with password set.
+        Override save to check if we're modifying the username. If we are, we need to check that there isn't
+        another user with the same username. Raises a ValidationError if that is the case.
+        :return: Saved instance.
         """
-        user = super(UserSerializer, self).create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+        username = self.validated_data.get("username")
+        if username:
+            # If we are updating then ignore if the username is the same (i.e. it's not changing)
+            if not self.instance or self.instance.username != username:
+                if User.objects.filter(username=username).exists():
+                    raise ValidationError("A user already exists with the username {username}".format(username=username))
+        return super(UserSerializer, self).save()
+
+    def validate_password(self, value):
+        return make_password(value)
 
     def get_role(self, user):
         # TODO: Use Django roles instead
