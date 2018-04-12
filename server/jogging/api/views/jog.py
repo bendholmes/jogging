@@ -1,4 +1,4 @@
-from django.db.models import Sum
+from django.db.models import Count, Sum
 from django.db.models.functions import TruncWeek
 
 from rest_framework.views import APIView
@@ -43,8 +43,9 @@ class JogReportView(APIView):
         qs = Jog.objects.filter(owner=request.user).annotate(
             week=TruncWeek('date')
         ).values('week').annotate(
-            distance=Sum('distance'),
-            time=Sum('time')
+            total_jogs=Count('id'),
+            total_distance=Sum('distance'),
+            total_time=Sum('time')
         ).order_by('-week')
 
         return Response(

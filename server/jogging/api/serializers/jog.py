@@ -28,7 +28,7 @@ class JogSerializer(serializers.ModelSerializer):
         :param obj: Jog being serialized.
         :return: Average speed to two decimal places.
         """
-        return "{0:.2f} distance per hour".format(obj.average_speed)
+        return float("{0:.2f}".format(obj.average_speed))
 
 
 class AdminJogSerializer(JogSerializer):
@@ -47,11 +47,11 @@ class AdminJogSerializer(JogSerializer):
 
 class JogReportSerializer(serializers.Serializer):
     week = serializers.DateTimeField()
-    distance = serializers.IntegerField()
+    average_distance = serializers.SerializerMethodField()
     average_speed = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('week', 'average_speed', 'distance',)
+        fields = ('week', 'average_speed', 'average_distance',)
 
     def get_average_speed(self, obj):
         """
@@ -59,6 +59,14 @@ class JogReportSerializer(serializers.Serializer):
         :param obj: Jog report being serialized.
         :return: Average speed to two decimal places.
         """
-        return "{0:.2f} distance per hour".format(
-            calculate_speed(obj['distance'], timedelta_to_time(obj['time']))
-        )
+        return float("{0:.2f}".format(
+            calculate_speed(obj['total_distance'], timedelta_to_time(obj['total_time']))
+        ))
+
+    def get_average_distance(self, obj):
+        """
+        Gets the average distance to two decimal places.
+        :param obj: Jog report being serialized.
+        :return: Average distance to two decimal places.
+        """
+        return float("{0:.2f}".format(obj['total_distance'] / obj['total_jogs']))

@@ -12,7 +12,7 @@ class Report extends React.Component {
       <tr>
         <td>{formatDate(report.week)}</td>
         <td>{report.average_speed}</td>
-        <td>{report.distance}</td>
+        <td>{report.average_distance}</td>
       </tr>
     );
   }
@@ -62,8 +62,8 @@ class Reports extends React.Component {
       <thead>
         <tr>
           <td>Week</td>
-          <td>Average Speed</td>
-          <td>Distance</td>
+          <td>Average Speed (mph)</td>
+          <td>Average Distance</td>
         </tr>
       </thead>
       <tbody>

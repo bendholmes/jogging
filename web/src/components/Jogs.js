@@ -105,7 +105,7 @@ class Jogs extends React.Component {
             <td>Date</td>
             <td>Distance</td>
             <td>Time</td>
-            <td>Average Speed</td>
+            <td>Average Speed (mph)</td>
             {isAdmin() && <td>Owner</td>}
             <td>Action</td>
           </tr>
