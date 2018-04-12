@@ -23,10 +23,13 @@ export default class Form extends React.Component {
    * @returns {*} Initial input value.
    */
   getInitialValue(input) {
-    if (this.props.data)
-      return this.props.data[input.name];
-    else
-      return input.type === 'checkbox' ? false : '';
+    if (this.props.data) {
+      if (input.type === "datetime-local")
+        return this.props.data[input.name].slice(0, -1);
+      else
+        return this.props.data[input.name];
+    }
+    else return input.type === 'checkbox' ? false : '';
   }
 
   /**
@@ -35,7 +38,7 @@ export default class Form extends React.Component {
    */
   update = (e) => {
     this.setState({[e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value});
-  }
+  };
 
   /**
    * Renders a message box.
