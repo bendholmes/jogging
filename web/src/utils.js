@@ -71,6 +71,25 @@ export function get(url, params=null) {
 }
 
 /**
+ * Deletes an object with the given id at the given url.
+ * @param url The endpoint to delete from.
+ * @param id The id of the object to delete.
+ * @returns {Promise<Response>}
+ */
+export function del(url, id) {
+  return fetch(
+    BASE_URL + url + "/" + encodeURIComponent(id) + "/", // Make sure we encode the ID as it could contain any character
+    {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      }
+    }
+  );
+}
+
+/**
  * Stores the logged in user in local storage. No need to use Flux / Redux for such a simple SPA. If we are not
  * given a user object then we remove it entirely.
  * @param user The user object.
@@ -100,4 +119,13 @@ export function isManager() {
  */
 export function formatDate(date) {
   return moment(date).format("ddd DD MMM Y @ h:mm A");
+}
+
+/**
+ * Creates a new array from the given array without the object to remove.
+ * @param arr The array to modify.
+ * @param objToRemove The object to remove.
+ */
+export function without(arr, objToRemove) {
+  return arr.filter((obj) => obj !== objToRemove);
 }

@@ -5,7 +5,7 @@ import moment from "moment";
 
 import CreateJogForm from "../forms/CreateJogForm";
 import FilterJogsForm from "../forms/FilterJogsForm";
-import { get, getUser, isAdmin, formatDate, sortByKey } from "../utils";
+import { get, getUser, isAdmin, formatDate, del, without } from "../utils";
 
 class Jog extends React.Component {
   render() {
@@ -27,21 +27,25 @@ class Jog extends React.Component {
 }
 
 class Jogs extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      jogs: [],
-    }
-  }
+  ENDPOINT = "jog";
+
+  state = {
+    jogs: [],
+  };
 
   onDelete(jog) {
-    this.setState({jogs: this.state.jogs.filter((oldJog) => oldJog !== jog)});
+    this.setState(prevState => ({jogs: without(prevState.jogs, jog)}));
 
-    // TODO: Call server
+    del(this.ENDPOINT, jog.id)
+    .then(
+      (response) => {
+        if (!response.ok) throw Error(response.statusText);
+      }
+    );
   }
 
   loadJogs = (filters) => {
-    get("jog", filters)
+    get(this.ENDPOINT, filters)
     .then(
       (response) => {
         if (response.status >= 400) {
@@ -103,6 +107,7 @@ class Jogs extends React.Component {
             <td>Time</td>
             <td>Average Speed</td>
             {isAdmin() && <td>Owner</td>}
+            <td>Action</td>
           </tr>
         </thead>
         <tbody>

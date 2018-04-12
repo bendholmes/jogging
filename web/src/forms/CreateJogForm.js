@@ -11,14 +11,10 @@ export default class CreateJogForm extends React.Component {
   FORM_ACTION_NAME = "Create Jog";
   ENDPOINT = "jog";
 
-  constructor() {
-    super();
-
-    this.state = {
-      message: '',
-      key: 0
-    };
-  }
+  state = {
+    message: '',
+    key: 0
+  };
 
   createJog = (e, values) => {
     e.preventDefault();
@@ -44,7 +40,7 @@ export default class CreateJogForm extends React.Component {
 
   success = (data) => {
     this.setState({message: this.JOG_CREATED_MESSAGE});
-    this.setState({key: this.state.key + 1}); // Clear the form
+    this.setState(prevState => ({key: prevState.key + 1})); // Clear the form
     this.props.addJog(data); // Add the new jog to the list
   };
 
