@@ -6,12 +6,75 @@
 	},
 	"item": [
 		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "569c7887-b821-4379-9f92-c4235398b743",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var user = pm.response.json();",
+							"    pm.expect(user).to.have.property('username');",
+							"    pm.expect(user).to.have.property('role');",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e4e5fa82-89fe-4112-9e30-ac82484206b0",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"username\", \"admin-user\")",
+							"pm.environment.set(\"password\", \"admin-password\")"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\",\n\t\"is_superuser\": true,\n\t\"is_staff\": true\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/user/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Login",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "7f60b6ea-624f-46bc-afa8-f7f2d70720d3",
+						"id": "305370d4-93ba-48fc-94a8-5fb9519ad2d8",
 						"type": "text/javascript",
 						"exec": [
 							"pm.environment.set(\"csrftoken\", decodeURIComponent(pm.cookies.get(\"csrftoken\")))",
@@ -24,7 +87,13 @@
 							"    var user = pm.response.json();",
 							"    pm.expect(user).to.have.property('username');",
 							"    pm.expect(user).to.have.property('role');",
-							"});"
+							"});",
+							"",
+							"",
+							"// If we have specified an action after login, set that as the next one",
+							"if (pm.environment.get(\"requestAfterLogin\")) {",
+							"    postman.setNextRequest(pm.environment.get(\"requestAfterLogin\"));",
+							"}"
 						]
 					}
 				}
@@ -71,7 +140,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "371daeae-883a-43f2-a1d8-dbbacff5dc36",
+						"id": "718fae3c-201d-44ad-a67a-a5bd9f02ee8c",
 						"type": "text/javascript",
 						"exec": [
 							"pm.environment.set(\"last-created-jog\", pm.response.json().id);",
@@ -83,7 +152,7 @@
 							"pm.test(\"response must have expected fields\", function () {",
 							"    var jog = pm.response.json();",
 							"    pm.expect(jog).to.have.property('id');",
-							"    pm.expect(jog.owner).to.equal('super');",
+							"    pm.expect(jog.owner).to.equal(pm.environment.get('username'));",
 							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00Z');",
 							"    pm.expect(jog.distance).to.equal(100);",
 							"    pm.expect(jog.time).to.equal('00:34:12');    ",
@@ -187,6 +256,76 @@
 			"response": []
 		},
 		{
+			"name": "List Jogs Between Dates",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "74ddacf5-9299-4985-89a5-8f548bb799ab",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var firstJog = pm.response.json()[0];",
+							"    pm.expect(firstJog).to.have.property('id');",
+							"    pm.expect(firstJog).to.have.property('owner');",
+							"    pm.expect(firstJog).to.have.property('date');",
+							"    pm.expect(firstJog).to.have.property('distance');",
+							"    pm.expect(firstJog).to.have.property('time');",
+							"    pm.expect(firstJog).to.have.property('average_speed');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/?date_0=2000-01-01&date_1=4000-01-01",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						""
+					],
+					"query": [
+						{
+							"key": "date_0",
+							"value": "2000-01-01"
+						},
+						{
+							"key": "date_1",
+							"value": "4000-01-01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Jog",
 			"event": [
 				{
@@ -202,7 +341,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "75b18b3e-25dc-4a9b-9c92-57fa1b52f2a0",
+						"id": "7d166aec-422c-47e2-8aaf-41c99a27b69d",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test(\"response must be ok\", function () {",
@@ -212,7 +351,7 @@
 							"pm.test(\"response must have expected fields\", function () {",
 							"    var jog = pm.response.json();",
 							"    pm.expect(jog).to.have.property('id');",
-							"    pm.expect(jog.owner).to.equal('super');",
+							"    pm.expect(jog.owner).to.equal(pm.environment.get('username'));",
 							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00Z');",
 							"    pm.expect(jog.distance).to.equal(100);",
 							"    pm.expect(jog.time).to.equal('00:34:12');    ",
@@ -263,7 +402,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1fe709e5-c1f9-475d-a167-cc167c96f580",
+						"id": "72ae5cc1-e54f-4366-b3be-e7fc9621265e",
 						"type": "text/javascript",
 						"exec": [
 							"pm.environment.set(\"last-created-jog\", pm.response.json().id);",
@@ -275,7 +414,7 @@
 							"pm.test(\"response must have expected fields\", function () {",
 							"    var jog = pm.response.json();",
 							"    pm.expect(jog).to.have.property('id');",
-							"    pm.expect(jog.owner).to.equal('super');",
+							"    pm.expect(jog.owner).to.equal(pm.environment.get('username'));",
 							"    pm.expect(jog.date).to.equal('4000-10-20T12:31:00Z');",
 							"    pm.expect(jog.distance).to.equal(200);",
 							"    pm.expect(jog.time).to.equal('00:44:12');    ",
@@ -303,63 +442,6 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n\t\"date\": \"4000-10-20 12:31\",\n\t\"distance\": 200,\n\t\"time\": \"00:44:12\"\n}"
-				},
-				"url": {
-					"raw": "{{url}}/api/jog/{{last-created-jog}}/",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"api",
-						"jog",
-						"{{last-created-jog}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Jog",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "b04b957a-d10b-4530-8e6c-7bb1a2c16fb0",
-						"type": "text/javascript",
-						"exec": [
-							"pm.test(\"response must be ok\", function () {",
-							"    pm.response.to.have.status(204);",
-							"});",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "X-CSRFToken",
-						"value": "{{csrftoken}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
 				},
 				"url": {
 					"raw": "{{url}}/api/jog/{{last-created-jog}}/",
@@ -434,6 +516,63 @@
 			"response": []
 		},
 		{
+			"name": "Delete Jog",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "34ed0c61-4bf3-41f6-a2c3-e5c6cd2e9454",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/jog/{{last-created-jog}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"jog",
+						"{{last-created-jog}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Logout",
 			"event": [
 				{
@@ -449,12 +588,16 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "55039a59-bfaf-4820-ba89-03658c0f42db",
+						"id": "9635d0f3-3540-465d-b8c0-080f27d09146",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test(\"response must be ok\", function () {",
 							"    pm.response.to.be.ok;",
-							"});"
+							"});",
+							"",
+							"// For the test runner, we want to login again and then delete the user afterwards",
+							"postman.setNextRequest(\"Login\");",
+							"pm.environment.set(\"requestAfterLogin\", \"List Users\")"
 						]
 					}
 				}
@@ -482,6 +625,251 @@
 					"path": [
 						"api",
 						"logout",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Users",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "bbb07d77-b306-4218-8040-39fc68d0bb3b",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var firstUser = pm.response.json()[0];",
+							"    pm.expect(firstUser).to.have.property('username');",
+							"    pm.expect(firstUser).to.have.property('role');",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/user/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "dd88fd99-36e8-457f-a26a-37cec727dd1e",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var user = pm.response.json();",
+							"    pm.expect(user.username).to.equal(pm.environment.get(\"username\"));",
+							"    pm.expect(user.role).to.equal(\"admin\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/user/{{username}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"{{username}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9f8423e5-ec92-4b95-855e-b229bc71682e",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be ok\", function () {",
+							"    pm.response.to.be.ok;",
+							"});",
+							"",
+							"pm.test(\"response must have expected fields\", function () {",
+							"    var user = pm.response.json();",
+							"    pm.expect(user.username).to.have.equal('patched-user');",
+							"    pm.expect(user).to.have.property('role');",
+							"});",
+							"",
+							"// For the test runner, we want to login again and then delete the user afterwards",
+							"if (pm.response.code === 200) {",
+							"    postman.setNextRequest(\"Login\");",
+							"    pm.environment.set(\"username\", \"patched-user\")",
+							"    pm.environment.set(\"password\", \"patched-pass\")",
+							"    pm.environment.set(\"requestAfterLogin\", \"Delete User\")",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"patched-user\",\n\t\"password\": \"patched-pass\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/user/{{username}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"{{username}}",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c6794873-9f2e-49e8-ad47-f8af69053d3c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7d8a31ea-707f-4474-8617-50aada453d84",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"response must be no content\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"",
+							"pm.environment.set(\"requestAfterLogin\", \"Create Jog\")"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-CSRFToken",
+						"value": "{{csrftoken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/api/user/{{username}}/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"{{username}}",
 						""
 					]
 				}
