@@ -198,7 +198,7 @@ class Users extends React.Component {
 
   renderUser = (user) => (
     <User
-      key={user.username}
+      key={user.id}
       user={user}
       onDelete={this.deleteUser}
       onUpdate={this.showUpdateUserForm}
@@ -207,7 +207,7 @@ class Users extends React.Component {
 
   renderUpdateForm = () => (
     <UpdateUserForm
-      key={this.state.updateUser.username}
+      key={this.state.updateUser.id}
       user={this.state.updateUser}
       onUpdate={this.updateUser}
       onCancel={this.hideUpdateUserForm}
