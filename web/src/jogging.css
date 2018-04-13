@@ -36,3 +36,9 @@ ul {
     padding-bottom: 10px;
     color: #b22222;
 }
+
+.loggedInAs {
+    padding: 5px;
+    color: #fff;
+    background-color: #17d136;
+}

@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Redirect } from 'react-router-dom';
 
 import NavBar from "./NavBar";
+import LoggedInAs from "./LoggedInAs";
 import { getUser } from "../utils";
 import { URLs } from "../constants";
 import { hasPagePermission } from "../permissions";
@@ -30,6 +31,7 @@ const LoggedInComponent = ({component: Component, ...rest}) => {
     return (
       <div>
         <NavBar />
+        <LoggedInAs />
         <Component {...matchProps} />
       </div>
     );
