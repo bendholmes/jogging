@@ -53,9 +53,8 @@ class BasePermissions(object):
 class UserPermissions(object):
     @staticmethod
     @authenticated_users
-    @allow_staff_or_superuser
     def has_read_permission(request):
-        return False
+        return True
 
     @allow_staff_or_superuser
     @authenticated_users

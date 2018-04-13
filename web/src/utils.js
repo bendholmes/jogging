@@ -129,6 +129,10 @@ export function getUser() {
   return JSON.parse(localStorage.getItem("user"));
 }
 
+export function isUser() {
+  return getUser().role === "user";
+}
+
 export function isAdmin() {
   return getUser().role === "admin";
 }

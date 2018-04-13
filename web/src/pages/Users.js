@@ -4,7 +4,7 @@ import DocumentTitle from "react-document-title";
 
 import UpdateUserForm from "../forms/UpdateUserForm";
 import AdminCreateUserForm from "../forms/AdminCreateUserForm";
-import { get, del, without, replace, authenticate } from "../utils";
+import { get, del, without, replace, authenticate, isUser, getUser, logout } from "../utils";
 
 
 /**
@@ -97,7 +97,9 @@ class Users extends React.Component {
       users: replace(prevState.users, user.id, user)
     }));
     this.hideUpdateUserForm();
-    authenticate(this); // Re-authenticate as they may have updated their own user
+
+    // Force a logout if they updated their own user to ensure re-authentication
+    if (user.id === getUser().id) logout(this.props.history);
   };
 
   /**
@@ -168,7 +170,7 @@ class Users extends React.Component {
 
     return (
       <div>
-        <AdminCreateUserForm addUser={this.addUser} />
+        {!isUser() && <AdminCreateUserForm addUser={this.addUser} />}
         {updateForm}
         <h2>All Users</h2>
         {users}

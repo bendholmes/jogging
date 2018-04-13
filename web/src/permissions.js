@@ -1,10 +1,7 @@
 import { getUser } from "./utils";
-import { URLs } from "./constants";
 
 
-const PAGE_PERMISSIONS = {
-  [URLs.USERS]: ['admin', 'manager']
-};
+const PAGE_PERMISSIONS = {};
 
 /**
  * Checks if the logged in user has permission for the given key in the given permissions. If the
