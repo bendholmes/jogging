@@ -24,10 +24,10 @@ export default class Form extends React.Component {
    */
   getInitialValue(input) {
     if (this.props.data) {
-      if (input.type === "datetime-local")
+      if (input.type === "datetime-local" && this.props.data[input.name])
         return this.props.data[input.name].slice(0, -1);
       else
-        return this.props.data[input.name];
+        return this.props.data[input.name] || '';
     }
     else return input.type === 'checkbox' ? false : '';
   }
