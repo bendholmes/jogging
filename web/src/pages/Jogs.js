@@ -52,7 +52,8 @@ class Jogs extends React.Component {
   state = {
     jogs: [],
     updateJog: null,
-    message: this.INITIAL_MESSAGE
+    message: this.INITIAL_MESSAGE,
+    filters: null
   };
 
   componentDidMount() {
@@ -69,7 +70,7 @@ class Jogs extends React.Component {
     .then(
       (response) => {
         if (!response.ok) throw Error(response.statusText);
-        this.setState({message: ''});
+        this.setState({message: '', filters: filters});
         return response.json();
       }
     )
@@ -90,11 +91,23 @@ class Jogs extends React.Component {
     jogs.sort((j1, j2) => moment(j1.date).unix()  < moment(j2.date).unix() ? 1 : -1);
   }
 
+  _isWithinDateFilter(jog) {
+    // No filter means it's ok
+    if (!this.state.filters) return true;
+
+    return moment.utc(jog.date).isBetween(
+       moment.utc(this.state.filters.date_0, "YYYY-MM-DD"),
+       moment.utc(this.state.filters.date_1, "YYYY-MM-DD")
+    );
+  }
+
   /**
    * Adds a new jog to the list and re-sorts them by date.
    * @param jog The jog to add.
    */
   addJog = (jog) => {
+    if (!this._isWithinDateFilter(jog)) return;
+
     this.setState((prevState) => {
       let jogs = prevState.jogs;
       jogs.push(jog);
@@ -108,6 +121,9 @@ class Jogs extends React.Component {
    * @param jog Jog to update.
    */
   updateJog = (jog) => {
+    // If the jog is no longer within the date filters then we should remove it
+    if (!this._isWithinDateFilter(jog)) return this._removeJog(jog);
+
     this.setState((prevState) => {
       let jogs = replace(prevState.jogs, jog.id, jog);
       this._sortJogs(jogs);
@@ -117,11 +133,20 @@ class Jogs extends React.Component {
   };
 
   /**
+   * Removes the given jog from the state.
+   * @param jog The jog to remove.
+   * @private
+   */
+  _removeJog(jog) {
+    this.setState(prevState => ({jogs: without(prevState.jogs, jog.id)}));
+  }
+
+  /**
    * Deletes a jog and removes it from the list.
    * @param jog The jog to delete.
    */
   deleteJog = (jog) => {
-    this.setState(prevState => ({jogs: without(prevState.jogs, jog)}));
+    this._removeJog(jog);
 
     del(this.ENDPOINT, jog.id)
     .then(

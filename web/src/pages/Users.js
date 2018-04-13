@@ -107,7 +107,7 @@ class Users extends React.Component {
    * @param user The user to remove.
    */
   deleteUser = (user) => {
-    this.setState(prevState => ({users: without(prevState.users, user)}));
+    this.setState(prevState => ({users: without(prevState.users, user.id)}));
 
     del(this.ENDPOINT, user.id)
     .then(

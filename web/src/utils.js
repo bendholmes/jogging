@@ -153,10 +153,10 @@ export function formatDate(date) {
 /**
  * Creates a new array from the given array without the object to remove.
  * @param arr The array to modify.
- * @param objToRemove The object to remove.
+ * @param objIdToRemove Id of the object to remove.
  */
-export function without(arr, objToRemove) {
-  return arr.filter((obj) => obj !== objToRemove);
+export function without(arr, objIdToRemove) {
+  return arr.filter((obj) => obj.id !== objIdToRemove);
 }
 
 /**
