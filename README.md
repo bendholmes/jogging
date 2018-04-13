@@ -20,7 +20,7 @@ The project requires Python, PostgreSQL, Node.js, NPM and Chrome, along with sev
 
 * Setup the Database. If you wish to use different values, be sure to update the `DATABASES` settings in `server/jogging/settings.py`.
 
-    * Create a PostgreSQL user with the username `postgres` and password `postgres`/
+    * Create a PostgreSQL user with the username `postgres` and password `postgres`
 
     * Create a PostgreSQL  database called `jogging`.
 
@@ -42,7 +42,7 @@ The project requires Python, PostgreSQL, Node.js, NPM and Chrome, along with sev
 
         pip install -r requirements.txt
 
-* Install NPM requirements:
+* Install NPM requirements; from the /web directory:
 
         npm install
 
@@ -77,6 +77,8 @@ The project requires Python, PostgreSQL, Node.js, NPM and Chrome, along with sev
         https://www.getpostman.com/
 
 * Import the `Jogging.postman_collection.json` collection config and the `local - admin.postman_environment.json` environment config.
+
+* Ensure the Django web server is running (see above for running instructions).
 
 * In the top bar, click `Runner`.
 
