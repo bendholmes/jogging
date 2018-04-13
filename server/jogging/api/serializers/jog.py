@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from jogging.models import Jog
+from jogging.models import Jog, User
 from jogging.utils import timedelta_to_time, calculate_speed
 
 
@@ -32,7 +32,7 @@ class JogSerializer(serializers.ModelSerializer):
 
 
 class AdminJogSerializer(JogSerializer):
-    owner = serializers.SlugRelatedField(slug_field='username', queryset=Jog.objects.all(), required=False)
+    owner = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all(), required=False)
 
     def create(self, validated_data):
         """

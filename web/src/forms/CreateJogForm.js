@@ -1,7 +1,7 @@
 import React from "react";
 
 import Form from "./Form"
-import { post } from "../utils";
+import { post, isAdmin } from "../utils";
 
 
 export default class CreateJogForm extends React.Component {
@@ -15,6 +15,19 @@ export default class CreateJogForm extends React.Component {
     message: '',
     key: 0
   };
+
+  inputs = [
+    {label: "Date", name: "date", type: "datetime-local"},
+    {label: "Distance", name: "distance", type: "number"},
+    {label: "Time", name: "time", type: "time"},
+  ];
+
+  constructor() {
+    super();
+
+    // Add an owner field if the logged in user is an admin
+    if (isAdmin()) this.inputs.push({label: "Owner", name: "owner", type: "text"});
+  }
 
   createJog = (e, values) => {
     e.preventDefault();
@@ -47,12 +60,6 @@ export default class CreateJogForm extends React.Component {
   error = (message) => {
     this.setState({message: this.CREATE_FAILED_MESSAGE + message});
   };
-
-  inputs = [
-    {label: "Date", name: "date", type: "datetime-local"},
-    {label: "Distance", name: "distance", type: "number"},
-    {label: "Time", name: "time", type: "time"},
-  ];
 
   render() {
     return (

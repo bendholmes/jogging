@@ -1,6 +1,6 @@
 import React from "react";
 
-import { patch } from "../utils";
+import {isAdmin, patch} from "../utils";
 import Form from "../forms/Form";
 
 export default class UpdateJogForm extends React.Component {
@@ -13,6 +13,19 @@ export default class UpdateJogForm extends React.Component {
     message: '',
     key: 0
   };
+
+  inputs = [
+    {label: "Date", name: "date", type: "datetime-local"},
+    {label: "Distance", name: "distance", type: "number"},
+    {label: "Time", name: "time", type: "time"},
+  ];
+
+  constructor() {
+    super();
+
+    // Add an owner field if the logged in user is an admin
+    if (isAdmin()) this.inputs.push({label: "Owner", name: "owner", type: "text"});
+  }
 
   onSubmit = (e, values) => {
     e.preventDefault();
@@ -35,12 +48,6 @@ export default class UpdateJogForm extends React.Component {
       }
     )
   };
-
-  inputs = [
-    {label: "Date", name: "date", type: "datetime-local"},
-    {label: "Distance", name: "distance", type: "number"},
-    {label: "Time", name: "time", type: "time"},
-  ];
 
   render() {
     return (
