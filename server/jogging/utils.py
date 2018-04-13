@@ -23,4 +23,5 @@ def calculate_speed(distance, timedelta):
     :param timedelta: The time taken to travel said distance.
     :return: The distance per hour speed.
     """
-    return distance / timedelta_to_hours(timedelta)
+    hours = timedelta_to_hours(timedelta)
+    return 0 if hours == 0 else distance / hours
