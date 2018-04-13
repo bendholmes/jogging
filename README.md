@@ -1,4 +1,4 @@
-# Overview
+# Overview 📚
 
 This project is comprised of a Django web server driving a Django Rest Framework REST API which is then used by a
 React SPA.
@@ -61,6 +61,8 @@ The project requires Python, PostgreSQL, Node.js, NPM and Chrome, along with sev
     * From `/web/src/`:
 
             HOST=`127.0.0.1` npm start
+
+* Navigate to `http://127.0.0.1:3000` in a Chrome tab. **Note**: Ensure this URL is exact, `localhost` will not work!
 
 # Running the Tests
 
