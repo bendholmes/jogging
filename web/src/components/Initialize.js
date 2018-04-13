@@ -4,6 +4,9 @@ import { authenticate } from "../utils";
 import {URLs} from "../constants";
 
 
+/**
+ * Homepage component that authenticates the user and redirects to the login or jogs page as applicable.
+ */
 export default class Initialize extends React.Component {
   state = {
     error: ''

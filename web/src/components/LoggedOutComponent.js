@@ -5,6 +5,7 @@ import LoggedOutNavBar from "./LoggedOutNavBar";
 import { getUser } from "../utils";
 import { URLs } from "../constants";
 
+
 /**
  * Wraps pages only visible when logged out, such as the login and signup pages.
  */

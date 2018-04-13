@@ -2,11 +2,14 @@ import React from "react";
 
 import DocumentTitle from "react-document-title";
 
-import Form from "../forms/Form";
-import CreateUserForm from "../forms/CreateUserForm";
-import { get, del, without, patch, replace, authenticate } from "../utils";
+import UpdateUserForm from "../forms/UpdateUserForm";
+import AdminCreateUserForm from "../forms/AdminCreateUserForm";
+import { get, del, without, replace, authenticate } from "../utils";
 
 
+/**
+ * Renders a user row with update and delete actions.
+ */
 class User extends React.Component {
   onUpdate = () => {
     this.props.onUpdate(this.props.user);
@@ -33,98 +36,10 @@ class User extends React.Component {
   }
 }
 
-class CreateForm extends React.Component {
-  USER_CREATED_MESSAGE = "User created! :)";
-  CREATE_FAILED_MESSAGE = "Failed to create user: ";
-  FORM_HEADING = "Create User Form";
-  FORM_ACTION_NAME = "Create User";
-
-  state = {
-    message: '',
-    key: 0
-  };
-
-  success = (data) => {
-    this.setState({message: this.USER_CREATED_MESSAGE});
-    this.setState(prevState => ({key: prevState.key + 1})); // Clear the form
-    this.props.addUser(data); // Add the new user to the list
-  };
-
-  error = (message) => {
-    this.setState({message: this.CREATE_FAILED_MESSAGE + message});
-  };
-
-  render() {
-    return (
-      <CreateUserForm
-        key={this.state.key}
-        heading={this.FORM_HEADING}
-        actionName={this.FORM_ACTION_NAME}
-        message={this.state.message}
-        success={this.success}
-        error={this.error}
-      />
-    );
-  }
-}
-
-class UpdateUserForm extends React.Component {
-  ENDPOINT = "user";
-  UPDATE_FAILED_MESSAGE = "Failed to update user: ";
-  FORM_HEADING = "Update User Form";
-  FORM_ACTION_NAME = "Update User";
-
-  state = {
-    message: '',
-    key: 0
-  };
-
-  updateUser = (e, values) => {
-    e.preventDefault();
-
-    patch(this.ENDPOINT, this.props.user.id, values)
-    .then(
-      (response) => {
-        if (!response.ok) throw Error(response.statusText);
-        return response.json();
-      }
-    )
-    .then(
-      (data) => {
-        this.props.onUpdate(data); // Update the existing user in the list
-      }
-    )
-    .catch(
-      (error) => {
-        this.setState({message: this.UPDATE_FAILED_MESSAGE + error.message});
-      }
-    )
-  };
-
-  inputs = [
-    {label: "Username", name: "username", type: "input"},
-    {label: "Password", name: "password", type: "password"},
-    {label: "Admin?", name: "is_superuser", type: "checkbox"},
-    {label: "Manager?", name: "is_staff", type: "checkbox"},
-  ];
-
-  render() {
-    return (
-      <div>
-        <Form
-          heading={this.FORM_HEADING}
-          actionName={this.FORM_ACTION_NAME}
-          message={this.state.message}
-          inputs={this.inputs}
-          onSubmit={this.updateUser}
-          data={this.props.user}
-        />
-        <input type="submit" value="Cancel" onClick={this.props.onCancel}/>
-      </div>
-    );
-  }
-}
-
+/**
+ * Renders a table of users, retrieving them from the REST API. Provides functions to manage CRUD operations
+ * via additional forms.
+ */
 class Users extends React.Component {
   ENDPOINT = "user";
   NO_RESULTS_MESSAGE = "No users... huh?";
@@ -136,6 +51,9 @@ class Users extends React.Component {
     message: this.INITIAL_MESSAGE,
   };
 
+  /**
+   * Fetches the list of users once the component is mounted.
+   */
   componentDidMount() {
     get(this.ENDPOINT)
     .then(
@@ -158,6 +76,10 @@ class Users extends React.Component {
     );
   }
 
+  /**
+   * Adds the given user to the top of the list.
+   * @param user The user to add.
+   */
   addUser = (user) => {
     this.setState((prevState) => {
       let users = prevState.users;
@@ -166,14 +88,10 @@ class Users extends React.Component {
     });
   };
 
-  showUpdateUserForm = (user) => {
-    this.setState({updateUser: user});
-  };
-
-  hideUpdateUserForm = () => {
-    this.showUpdateUserForm(null);
-  };
-
+  /**
+   * Updates the given user in the list.
+   * @param user The updated user.
+   */
   updateUser = (user) => {
     this.setState((prevState) => ({
       users: replace(prevState.users, user.id, user)
@@ -198,14 +116,13 @@ class Users extends React.Component {
     );
   };
 
-  renderUser = (user) => (
-    <User
-      key={user.id}
-      user={user}
-      onDelete={this.deleteUser}
-      onUpdate={this.showUpdateUserForm}
-    />
-  );
+  showUpdateUserForm = (user) => {
+    this.setState({updateUser: user});
+  };
+
+  hideUpdateUserForm = () => {
+    this.showUpdateUserForm(null);
+  };
 
   renderUpdateForm = () => (
     <UpdateUserForm
@@ -213,6 +130,15 @@ class Users extends React.Component {
       user={this.state.updateUser}
       onUpdate={this.updateUser}
       onCancel={this.hideUpdateUserForm}
+    />
+  );
+
+  renderUser = (user) => (
+    <User
+      key={user.id}
+      user={user}
+      onDelete={this.deleteUser}
+      onUpdate={this.showUpdateUserForm}
     />
   );
 
@@ -242,7 +168,7 @@ class Users extends React.Component {
 
     return (
       <div>
-        <CreateForm addUser={this.addUser} />
+        <AdminCreateUserForm addUser={this.addUser} />
         {updateForm}
         <h2>All Users</h2>
         {users}
@@ -251,6 +177,9 @@ class Users extends React.Component {
   }
 }
 
+/**
+ * Admin users page. Lists users and provides CRUD.
+ */
 export default class UsersPage extends React.Component {
   PAGE_TITLE = "All Users";
 

@@ -6,6 +6,7 @@ import { getUser } from "../utils";
 import { URLs } from "../constants";
 import { hasPagePermission } from "../permissions";
 
+
 /**
  * Wraps pages requiring login, checking they are authenticated. If permissions are provided
  * via props, they are also checked. If no user is set then we redirect to the login page.

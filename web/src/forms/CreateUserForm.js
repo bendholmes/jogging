@@ -4,6 +4,9 @@ import Form from "./Form"
 import { post } from "../utils";
 
 
+/**
+ * Generic form used to create a new user. Used by both the signup page and admin users page.
+ */
 export default class CreateUserForm extends React.Component {
   ENDPOINT = "user";
 

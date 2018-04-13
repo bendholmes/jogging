@@ -6,6 +6,9 @@ import CreateUserForm from "../forms/CreateUserForm"
 import { URLs } from "../constants";
 
 
+/**
+ * Signup page. Provides a form to create a new user and redirects to login on success.
+ */
 export default class Signup extends React.Component {
   state = {
     message: ''

@@ -8,6 +8,10 @@ import UpdateJogForm from "../forms/UpdateJogForm";
 import FilterJogsForm from "../forms/FilterJogsForm";
 import {get, isAdmin, formatDate, del, without, replace} from "../utils";
 
+
+/**
+ * Renders a jog row with update and delete actions.
+ */
 class Jog extends React.Component {
   onUpdate = () => {
     this.props.onUpdate(this.props.jog);
@@ -36,6 +40,10 @@ class Jog extends React.Component {
   }
 }
 
+/**
+ * Renders a table of jogs, retrieving them from the REST API. Provides functions to manage CRUD operations
+ * via additional forms. Supports filtering by a date range.
+ */
 class Jogs extends React.Component {
   ENDPOINT = "jog";
   INITIAL_MESSAGE = "Loading jogs...";
@@ -51,17 +59,11 @@ class Jogs extends React.Component {
     this.loadJogs();
   }
 
-  deleteJog(jog) {
-    this.setState(prevState => ({jogs: without(prevState.jogs, jog)}));
-
-    del(this.ENDPOINT, jog.id)
-    .then(
-      (response) => {
-        if (!response.ok) throw Error(response.statusText);
-      }
-    );
-  }
-
+  /**
+   * Retrieves the jogs from the server. The server will filter this based on permissions, ensuring only the jogs
+   * you have access to are listed.
+   * @param filters Any filters to apply to the listing.
+   */
   loadJogs = (filters) => {
     get(this.ENDPOINT, filters)
     .then(
@@ -84,21 +86,66 @@ class Jogs extends React.Component {
     );
   };
 
-  filterJogs = (e, filters) => {
-    e.preventDefault();
-    this.loadJogs(filters);
-  };
+  _sortJogs(jogs) {
+    jogs.sort((j1, j2) => moment(j1.date).unix()  < moment(j2.date).unix() ? 1 : -1);
+  }
 
   /**
    * Adds a new jog to the list and re-sorts them by date.
    * @param jog The jog to add.
    */
   addJog = (jog) => {
-    let jogs = this.state.jogs;
-    jogs.push(jog);
-    jogs.sort((j1, j2) => moment(j1.date).unix()  < moment(j2.date).unix() ? 1 : -1);
-    this.setState({jogs: jogs});
+    this.setState((prevState) => {
+      let jogs = prevState.jogs;
+      jogs.push(jog);
+      this._sortJogs(jogs);
+      return {jogs: jogs};
+    });
   };
+
+  /**
+   * Updates a jog in the list with the given jog, re-sorts them by date and then hides the update form.
+   * @param jog Jog to update.
+   */
+  updateJog = (jog) => {
+    this.setState((prevState) => {
+      let jogs = replace(prevState.jogs, jog.id, jog);
+      this._sortJogs(jogs);
+      return {jogs: jogs};
+    });
+    this.hideUpdateJogForm();
+  };
+
+  /**
+   * Deletes a jog and removes it from the list.
+   * @param jog The jog to delete.
+   */
+  deleteJog(jog) {
+    this.setState(prevState => ({jogs: without(prevState.jogs, jog)}));
+
+    del(this.ENDPOINT, jog.id)
+    .then(
+      (response) => {
+        if (!response.ok) throw Error(response.statusText);
+      }
+    );
+  }
+
+  /**
+   * Re-loads the jogs applying the given filters.
+   * @param e The event object.
+   * @param filters The filters to apply.
+   */
+  filterJogs = (e, filters) => {
+    e.preventDefault();
+    this.loadJogs(filters);
+  };
+
+  renderFilterForm = () => (
+    <div>
+      <FilterJogsForm onSubmit={this.filterJogs} loadJogs={this.loadJogs} />
+    </div>
+  );
 
   showUpdateJogForm = (jog) => {
     this.setState({updateJog: jog});
@@ -107,28 +154,6 @@ class Jogs extends React.Component {
   hideUpdateJogForm = () => {
     this.showUpdateJogForm(null);
   };
-
-  updateJog = (jog) => {
-    this.setState((prevState) => ({
-      jogs: replace(prevState.jogs, jog.id, jog)
-    }));
-    this.hideUpdateJogForm();
-  };
-
-  renderJog = (jog) => (
-    <Jog
-      key={jog.id}
-      jog={jog}
-      onDelete={this.deleteJog}
-      onUpdate={this.showUpdateJogForm}
-    />
-  );
-
-  renderFilterForm = () => (
-    <div>
-      <FilterJogsForm onSubmit={this.filterJogs} loadJogs={this.loadJogs} />
-    </div>
-  );
 
   renderCreateForm = () => (
     <div>
@@ -142,6 +167,15 @@ class Jogs extends React.Component {
       jog={this.state.updateJog}
       onUpdate={this.updateJog}
       onCancel={this.hideUpdateJogForm}
+    />
+  );
+
+  renderJog = (jog) => (
+    <Jog
+      key={jog.id}
+      jog={jog}
+      onDelete={this.deleteJog}
+      onUpdate={this.showUpdateJogForm}
     />
   );
 
@@ -185,6 +219,10 @@ class Jogs extends React.Component {
   }
 }
 
+/**
+ * Jobs page. Lists jobs and provides CRUD. Admins can see all jobs, regular users and user managers can only
+ * see their own jogs.
+ */
 export default class JogPage extends React.Component {
   render() {
     return (

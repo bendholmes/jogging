@@ -7,6 +7,9 @@ import { URLs } from "../constants";
 import { post, setUser } from "../utils";
 
 
+/**
+ * Login page. Provides a login form and redirects to the jogs page on success.
+ */
 export default class Login extends React.Component {
   PAGE_TITLE = "Login to Jogging";
   FORM_HEADING = "Login Form";
@@ -14,13 +17,9 @@ export default class Login extends React.Component {
   ENDPOINT = "login";
   ERROR_MESSAGE = "Login failed: ";
 
-  constructor() {
-    super();
-
-    this.state = {
-      message: ''
-    };
-  }
+  state = {
+    message: ''
+  };
 
   login(e, values) {
     e.preventDefault();

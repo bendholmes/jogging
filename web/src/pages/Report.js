@@ -4,6 +4,9 @@ import DocumentTitle from 'react-document-title'
 
 import { get, formatDate } from "../utils";
 
+/**
+ * Renders a report for a given week.
+ */
 class Report extends React.Component {
   render() {
     const report = this.props.report;
@@ -19,19 +22,22 @@ class Report extends React.Component {
   }
 }
 
+/**
+ * Renders a table of weekly reports.
+ */
 class Reports extends React.Component {
   ENDPOINT = "report";
   NO_RESULTS_MESSAGE = "No jogging reports :(";
   INITIAL_MESSAGE = "Loading reports...";
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      reports: [],
-      message: this.INITIAL_MESSAGE
-    }
-  }
+  state = {
+    reports: [],
+    message: this.INITIAL_MESSAGE
+  };
 
+  /**
+   * Fetches the list of reports.
+   */
   componentDidMount() {
     get(this.ENDPOINT)
     .then(
@@ -89,6 +95,9 @@ class Reports extends React.Component {
   }
 }
 
+/**
+ * Weekly reports page.
+ */
 export default class ReportsPage extends React.Component {
   PAGE_TITLE = "My Weekly Jogging Reports";
 
