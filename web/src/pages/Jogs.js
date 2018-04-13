@@ -120,7 +120,7 @@ class Jogs extends React.Component {
    * Deletes a jog and removes it from the list.
    * @param jog The jog to delete.
    */
-  deleteJog(jog) {
+  deleteJog = (jog) => {
     this.setState(prevState => ({jogs: without(prevState.jogs, jog)}));
 
     del(this.ENDPOINT, jog.id)
@@ -129,7 +129,7 @@ class Jogs extends React.Component {
         if (!response.ok) throw Error(response.statusText);
       }
     );
-  }
+  };
 
   /**
    * Re-loads the jogs applying the given filters.
