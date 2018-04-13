@@ -142,7 +142,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "718fae3c-201d-44ad-a67a-a5bd9f02ee8c",
+						"id": "9e8b6342-bc05-4bae-8388-1034371c0dc9",
 						"type": "text/javascript",
 						"exec": [
 							"pm.environment.set(\"last-created-jog\", pm.response.json().id);",
@@ -155,10 +155,10 @@
 							"    var jog = pm.response.json();",
 							"    pm.expect(jog).to.have.property('id');",
 							"    pm.expect(jog.owner).to.equal(pm.environment.get('username'));",
-							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00Z');",
+							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00');",
 							"    pm.expect(jog.distance).to.equal(100);",
 							"    pm.expect(jog.time).to.equal('00:34:12');    ",
-							"    pm.expect(jog.average_speed).to.equal('175.44 distance per hour');   ",
+							"    pm.expect(jog.average_speed).to.equal(175.44);   ",
 							"});"
 						]
 					}
@@ -181,7 +181,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"date\": \"3000-10-20 12:31\",\n\t\"distance\": 100,\n\t\"time\": \"00:34:12\"\n}"
+					"raw": "{\n  \"date\": \"3000-10-20 12:31\",\n  \"distance\": 100,\n  \"time\": \"00:34:12\",\n  \"owner\": \"{{username}}\"\n}"
 				},
 				"url": {
 					"raw": "{{url}}/api/jog/",
@@ -343,7 +343,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "7d166aec-422c-47e2-8aaf-41c99a27b69d",
+						"id": "14c87b5c-3e0f-452d-a565-4603e003926c",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test(\"response must be ok\", function () {",
@@ -354,10 +354,10 @@
 							"    var jog = pm.response.json();",
 							"    pm.expect(jog).to.have.property('id');",
 							"    pm.expect(jog.owner).to.equal(pm.environment.get('username'));",
-							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00Z');",
+							"    pm.expect(jog.date).to.equal('3000-10-20T12:31:00');",
 							"    pm.expect(jog.distance).to.equal(100);",
 							"    pm.expect(jog.time).to.equal('00:34:12');    ",
-							"    pm.expect(jog.average_speed).to.equal('175.44 distance per hour');   ",
+							"    pm.expect(jog.average_speed).to.equal(175.44);   ",
 							"});"
 						]
 					}
@@ -404,7 +404,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "72ae5cc1-e54f-4366-b3be-e7fc9621265e",
+						"id": "577550df-b582-4f45-8d0f-5b94774d7825",
 						"type": "text/javascript",
 						"exec": [
 							"pm.environment.set(\"last-created-jog\", pm.response.json().id);",
@@ -417,10 +417,10 @@
 							"    var jog = pm.response.json();",
 							"    pm.expect(jog).to.have.property('id');",
 							"    pm.expect(jog.owner).to.equal(pm.environment.get('username'));",
-							"    pm.expect(jog.date).to.equal('4000-10-20T12:31:00Z');",
+							"    pm.expect(jog.date).to.equal('4000-10-20T12:31:00');",
 							"    pm.expect(jog.distance).to.equal(200);",
 							"    pm.expect(jog.time).to.equal('00:44:12');    ",
-							"    pm.expect(jog.average_speed).to.equal('271.49 distance per hour');   ",
+							"    pm.expect(jog.average_speed).to.equal(271.49);   ",
 							"});"
 						]
 					}
@@ -476,7 +476,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ae284813-38b1-4e98-ae97-e39369a8eafe",
+						"id": "72e5a71f-51c0-46b4-82ae-2d97cea34567",
 						"type": "text/javascript",
 						"exec": [
 							"pm.test(\"response must be ok\", function () {",
@@ -486,7 +486,7 @@
 							"pm.test(\"response must have expected fields\", function () {",
 							"    var firstReport = pm.response.json()[0];",
 							"    pm.expect(firstReport).to.have.property('week');",
-							"    pm.expect(firstReport).to.have.property('distance');",
+							"    pm.expect(firstReport).to.have.property('average_distance');",
 							"    pm.expect(firstReport).to.have.property('average_speed');",
 							"});"
 						]
