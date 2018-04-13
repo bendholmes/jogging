@@ -3,26 +3,9 @@ import time
 from django.urls import reverse
 
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from jogging.models import User
-
-
-class AwesomeAPITestCase(APITestCase):
-    def _create_user(self, username='username', password='password', is_superuser=False, is_staff=False):
-        url = reverse('user-list')
-        data = {
-            'username': username,
-            'password': password,
-            'is_superuser': is_superuser,
-            'is_staff': is_staff
-        }
-        return self.client.post(url, data, format='json')
-
-    def _authenticate(self, **kwargs):
-        new_user_data = self._create_user(**kwargs).data
-        self.user = User.objects.get(id=new_user_data['id'])
-        self.client.login(username=self.user.username, password=kwargs.get('password', 'password'))
+from tests.api.utils import AwesomeAPITestCase
 
 
 class CreateUserTests(AwesomeAPITestCase):
@@ -41,7 +24,7 @@ class CreateUserTests(AwesomeAPITestCase):
         self.assertEquals(user.is_superuser, False)
         self.assertEquals(user.is_staff, False)
 
-        # Test the response data matches the crated user data
+        # Test the response data matches the created user data
         self.assertEquals(response.data["id"], user.id)
         self.assertEquals(response.data["username"], user.username)
         self.assertEquals(response.data["is_superuser"], user.is_superuser)
@@ -146,6 +129,13 @@ class UpdateUserTests(AwesomeAPITestCase):
         self.assertEquals(response.data["date_joined"], time.mktime(user.date_joined.timetuple()))
         self.assertEquals(response.data["role"], "admin")
 
+    def test_update_user_no_auth(self):
+        user = self._create_user()
+        # ----------------------------------------------------------------------------------------------------
+        response = self._update_user(username='new', id=user.data['id'])
+        # ----------------------------------------------------------------------------------------------------
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_update_user_username_already_exists(self):
         self._authenticate()
         self._create_user(username='new')
@@ -216,6 +206,13 @@ class GetUserTests(AwesomeAPITestCase):
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self._test_response_equals_user(response.data, self.user)
 
+    def test_get_user_no_auth(self):
+        user = self._create_user()
+        # ----------------------------------------------------------------------------------------------------
+        response = self._get_user(id=user.data['id'])
+        # ----------------------------------------------------------------------------------------------------
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_get_all_users(self):
         self._authenticate()
         other = self._create_user(username='other')
@@ -225,6 +222,13 @@ class GetUserTests(AwesomeAPITestCase):
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(len(response.data), 1)
         self._test_response_equals_user(response.data[0], self.user)
+
+    def test_get_all_users_no_auth(self):
+        user = self._create_user()
+        # ----------------------------------------------------------------------------------------------------
+        response = self._get_users()
+        # ----------------------------------------------------------------------------------------------------
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_me(self):
         self._authenticate()
@@ -296,6 +300,14 @@ class DeleteUserTests(AwesomeAPITestCase):
         # ----------------------------------------------------------------------------------------------------
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEquals(User.objects.filter(username='other').count(), 0)
+
+    def test_delete_user_no_auth(self):
+        user = self._create_user()
+        # ----------------------------------------------------------------------------------------------------
+        response = self._delete_user(id=user.data['id'])
+        # ----------------------------------------------------------------------------------------------------
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEquals(User.objects.filter(username='username').count(), 1)
 
     def test_delete_other_user(self):
         self._authenticate()
