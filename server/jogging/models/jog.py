@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import fields
 
 from jogging.models.permissions import BasePermissions
-from jogging.utils import timedelta_to_hours, calculate_speed
+from jogging.utils import calculate_speed
 
 
 class Jog(BasePermissions, models.Model):
