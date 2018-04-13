@@ -122,13 +122,16 @@ class Jogs extends React.Component {
    */
   updateJog = (jog) => {
     // If the jog is no longer within the date filters then we should remove it
-    if (!this._isWithinDateFilter(jog)) return this._removeJog(jog);
+    if (!this._isWithinDateFilter(jog)) {
+      this._removeJog(jog);
+    } else {
+      this.setState((prevState) => {
+        let jogs = replace(prevState.jogs, jog.id, jog);
+        this._sortJogs(jogs);
+        return {jogs: jogs};
+      });
+    }
 
-    this.setState((prevState) => {
-      let jogs = replace(prevState.jogs, jog.id, jog);
-      this._sortJogs(jogs);
-      return {jogs: jogs};
-    });
     this.hideUpdateJogForm();
   };
 
