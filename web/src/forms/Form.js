@@ -27,9 +27,16 @@ export default class Form extends React.Component {
       if (input.type === "datetime-local" && this.props.data[input.name])
         return this.props.data[input.name].slice(0, -1);
       else
-        return this.props.data[input.name] || '';
+        return this.props.data[input.name] || this.getInputBlankValue(input);
     }
-    else return input.type === 'checkbox' ? false : '';
+    else return this.getInputBlankValue(input);
+  }
+
+  getInputBlankValue(input) {
+    switch(input.type) {
+      case 'checkbox': return false;
+      default: return '';
+    }
   }
 
   /**
@@ -99,7 +106,10 @@ export default class Form extends React.Component {
    * @param e Submission event.
    */
   onSubmit = (e) => {
-    this.props.onSubmit(e, this.state);
+    // Clone the state and then remove blank values (e.g. a password that hasn't changed)
+    let state = Object.assign({}, this.state);
+    Object.keys(state).forEach((key) => (state[key] === '') && delete state[key]);
+    this.props.onSubmit(e, state);
   };
 
   render() {
