@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from jogging.models import Jog, User
-from jogging.utils import timedelta_to_time, calculate_speed
+from jogging.utils import timedelta_to_hours, calculate_speed
 
 
 class JogSerializer(serializers.ModelSerializer):
@@ -47,11 +47,12 @@ class AdminJogSerializer(JogSerializer):
 
 class JogReportSerializer(serializers.Serializer):
     week = serializers.DateTimeField()
+    total_jogs = serializers.IntegerField()
     average_distance = serializers.SerializerMethodField()
     average_speed = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ('week', 'average_speed', 'average_distance',)
+        fields = ('week', 'total_jogs', 'average_speed', 'average_distance',)
 
     def get_average_speed(self, obj):
         """
@@ -60,7 +61,7 @@ class JogReportSerializer(serializers.Serializer):
         :return: Average speed to two decimal places.
         """
         return float("{0:.2f}".format(
-            calculate_speed(obj['total_distance'], timedelta_to_time(obj['total_time']))
+            calculate_speed(obj['total_distance'], timedelta_to_hours(obj['total_time']))
         ))
 
     def get_average_distance(self, obj):

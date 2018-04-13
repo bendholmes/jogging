@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import fields
 
 from jogging.models.permissions import BasePermissions
-from jogging.utils import calculate_speed
+from jogging.utils import time_to_hours, calculate_speed
 
 
 class Jog(BasePermissions, models.Model):
@@ -17,4 +17,4 @@ class Jog(BasePermissions, models.Model):
         Calculates the average speed of the jog.
         :return: The average speed.
         """
-        return calculate_speed(self.distance, self.time)
+        return calculate_speed(self.distance, time_to_hours(self.time))
