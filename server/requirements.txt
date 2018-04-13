@@ -1,0 +1,10 @@
+Django==2.1.dev20180407215333
+django-cors-headers==2.2.0
+django-filter==1.1.0
+djangorestframework==3.8.2
+dry-rest-permissions==0.1.10
+html5lib==1.0.1
+psycopg2==2.7.4
+pytz==2018.3
+six==1.11.0
+webencodings==0.5.1
