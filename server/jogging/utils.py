@@ -1,15 +1,4 @@
-import datetime
-
 from jogging import constants
-
-
-def time_to_hours(time):
-    """
-    Converts a given time into a float of the number of hours it represents, e.g. "02:34:12" => 2.57
-    :param time: Time object.
-    :return: Float hour value.
-    """
-    return time.hour + (time.minute / constants.MINUTES_IN_HOUR) + (time.second / constants.SECONDS_IN_HOUR)
 
 
 def timedelta_to_hours(timedelta):
@@ -34,4 +23,4 @@ def calculate_speed(distance, hours):
     :param hours: The hours taken to travel said distance.
     :return: The distance per hour speed.
     """
-    return distance / hours
+    return distance / timedelta_to_hours(hours)

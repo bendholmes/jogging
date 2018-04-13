@@ -2,14 +2,14 @@ from django.db import models
 from django.db.models import fields
 
 from jogging.models.permissions import BasePermissions
-from jogging.utils import time_to_hours, calculate_speed
+from jogging.utils import timedelta_to_hours, calculate_speed
 
 
 class Jog(BasePermissions, models.Model):
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
     date = fields.DateTimeField(null=False, blank=False)
     distance = fields.IntegerField(null=False, blank=False)
-    time = fields.TimeField(null=False, blank=False)
+    time = fields.DurationField(null=False, blank=False)
 
     @property
     def average_speed(self):
@@ -17,4 +17,4 @@ class Jog(BasePermissions, models.Model):
         Calculates the average speed of the jog.
         :return: The average speed.
         """
-        return calculate_speed(self.distance, time_to_hours(self.time))
+        return calculate_speed(self.distance, self.time)

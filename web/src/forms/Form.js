@@ -84,6 +84,10 @@ export default class Form extends React.Component {
           inputElements.push(this.renderInput(input, {checked: this.state[input.name]}));
           break;
         }
+        case 'time': {
+          inputElements.push(this.renderInput(input, {step: 1}));
+          break;
+        }
         default: inputElements.push(this.renderInput(input));
       }
     }
