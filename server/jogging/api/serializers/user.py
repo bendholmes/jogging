@@ -20,7 +20,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(BaseUserSerializer):
     id = serializers.IntegerField(read_only=True)
-    role = serializers.SerializerMethodField()
+    role = serializers.CharField(read_only=True)
     is_superuser = serializers.BooleanField(required=False)
     is_staff = serializers.BooleanField(required=False)
     date_joined = serializers.SerializerMethodField()
@@ -44,14 +44,6 @@ class UserSerializer(BaseUserSerializer):
 
     def validate_password(self, value):
         return make_password(value)
-
-    def get_role(self, user):
-        # TODO: Use Django roles instead
-        if user.is_superuser:
-            return 'admin'
-        elif user.is_staff:
-            return 'manager'
-        return 'user'
 
     def get_date_joined(self, user):
         """
