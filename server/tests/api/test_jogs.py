@@ -8,7 +8,7 @@ from jogging.models import Jog, User
 from tests.api.utils import AwesomeAPITestCase
 
 
-class CreateUserTests(AwesomeAPITestCase):
+class CreateJogTests(AwesomeAPITestCase):
     def test_create_jog(self):
         self._authenticate()
         # ----------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@ class CreateUserTests(AwesomeAPITestCase):
         jog = Jog.objects.get()
         self.assertIsNotNone(jog.id)
         self.assertEquals(jog.owner.username, self.user.username)
-        self.assertEquals(jog.date, datetime(day=15, month=4, year=3000, tzinfo=timezone(timedelta(0), 'UTC')))
+        self.assertEquals(jog.date, datetime(day=15, month=4, year=3000))
         self.assertEquals(jog.distance, 100)
         self.assertEquals(jog.time, timedelta(0, 5430))
 
@@ -79,7 +79,7 @@ class UpdateJogTests(AwesomeAPITestCase):
         jog = Jog.objects.get()
         self.assertIsNotNone(jog.id)
         self.assertEquals(jog.owner.username, self.user.username)
-        self.assertEquals(jog.date, datetime(day=16, month=5, year=4000, tzinfo=timezone(timedelta(0), 'UTC')))
+        self.assertEquals(jog.date, datetime(day=16, month=5, year=4000))
         self.assertEquals(jog.distance, 200)
         self.assertEquals(jog.time, timedelta(0, 9335))
 
