@@ -1,4 +1,4 @@
-import { BASE_URL } from "./constants";
+import {BASE_URL, URLs} from "./constants";
 import moment from "moment";
 
 /**
@@ -163,4 +163,35 @@ export function without(arr, objToRemove) {
  */
 export function replace(arr, objIdToReplace, newObj) {
   return arr.map(obj => obj.id === objIdToReplace ? newObj : obj);
+}
+
+/**
+ * Convenience method for logging out.
+ * @param history The history so we can redirect.
+ */
+export function logout(history) {
+  setUser();
+  history.push(URLs.LOGIN);
+}
+
+/**
+ * Calls the server to see if the user is authenticated. If they are not, logout is called clearing the
+ * locally stored user and redirecting to login.
+ * @param component The component attempting to authenticate.
+ * @param successCallback Callback method on success.
+ * @param errorCallback Callback method on error.
+ */
+export function authenticate(component, successCallback, errorCallback) {
+  get("user/me")
+  .then(
+    (response) => {
+      if (response.status !== 200) return logout(component.props.history);
+      if (successCallback) successCallback(response);
+    }
+  )
+  .catch(
+    (error) => {
+      if (errorCallback) errorCallback(error);
+    }
+  );
 }

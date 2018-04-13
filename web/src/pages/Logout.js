@@ -1,6 +1,5 @@
 import React from "react";
-import { URLs } from "../constants";
-import { post, setUser } from "../utils";
+import { post, logout } from "../utils";
 
 /**
  * Logs out the user and redirects them to login.
@@ -10,8 +9,7 @@ export default class Logout extends React.Component {
     post("logout")
     .then(
       (response) => {
-        setUser();
-        this.props.history.push(URLs.LOGIN);
+        logout(this.props.history);
       }
     )
   }

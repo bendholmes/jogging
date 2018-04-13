@@ -4,7 +4,7 @@ import DocumentTitle from "react-document-title";
 
 import Form from "../forms/Form";
 import CreateUserForm from "../forms/CreateUserForm";
-import {get, del, without, patch, replace } from "../utils";
+import { get, del, without, patch, replace, authenticate } from "../utils";
 
 
 class User extends React.Component {
@@ -179,6 +179,7 @@ class Users extends React.Component {
       users: replace(prevState.users, user.id, user)
     }));
     this.hideUpdateUserForm();
+    authenticate(this); // Re-authenticate as they may have updated their own user
   };
 
   /**
@@ -192,6 +193,7 @@ class Users extends React.Component {
     .then(
       (response) => {
         if (!response.ok) throw Error(response.statusText);
+        authenticate(this); // Re-authenticate as they may have deleted their own user
       }
     );
   };
@@ -255,7 +257,7 @@ export default class UsersPage extends React.Component {
   render() {
     return (
       <DocumentTitle title={this.PAGE_TITLE}>
-        <Users />
+        <Users history={this.props.history} />
       </DocumentTitle>
     );
   }

@@ -1,35 +1,24 @@
 import React from "react";
 
-import { get } from "../utils";
-import { URLs } from "../constants";
+import { authenticate } from "../utils";
+import {URLs} from "../constants";
 
 
 export default class Initialize extends React.Component {
-  constructor() {
-    super();
+  state = {
+    error: ''
+  };
 
-    this.state = {
-      error: ''
-    };
-  }
+  success = (response) => {
+    this.props.history.push(URLs.HOME);
+  };
+
+  error = (error) => {
+    this.setState({error: "Error initializing: " + error + ". Is the server running? Run the following in a shell: server/manage.py runserver 8080"});
+  };
 
   componentDidMount() {
-    // TODO: Move to util function loadUser and pass in success/fail callbacks
-    get("user/me")
-    .then(
-      (response) => {
-        if (response.status !== 200) {
-          this.props.history.push(URLs.LOGIN);
-        } else {
-          this.props.history.push(URLs.HOME);
-        }
-      }
-    )
-    .catch(
-      (error) => {
-        this.setState({error: "Error initializing: " + error + ". Is the server running? Run the following in a shell: server/manage.py runserver 8080"});
-      }
-    );
+    authenticate(this, this.success, this.error);
   }
 
   render() {
